@@ -1,0 +1,1152 @@
+<!DOCTYPE html>
+<html lang="it">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0, viewport-fit=cover">
+<meta name="apple-mobile-web-app-capable" content="yes">
+<meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
+<meta name="theme-color" content="#4E7253">
+<title>Dieta Emma</title>
+<link href="https://fonts.googleapis.com/css2?family=Fraunces:ital,opsz,wght@0,9..144,300;0,9..144,500;1,9..144,300&family=DM+Sans:wght@300;400;500;600&display=swap" rel="stylesheet">
+<style>
+:root{--cream:#FAF7F2;--warm:#F5F0E8;--sage:#7A9E7E;--sage-lt:#A8C4AB;--sage-dk:#4E7253;--terra:#C4775A;--terra-lt:#E8A98F;--char:#2C2C2C;--gray:#6B6B6B;--lgray:#D8D3CA;--card:#FFFFFF;--sh:0 2px 16px rgba(44,44,44,.07);--sh2:0 6px 28px rgba(44,44,44,.13);--r:16px}
+*{margin:0;padding:0;box-sizing:border-box;-webkit-tap-highlight-color:transparent}
+html{height:-webkit-fill-available}
+body{font-family:'DM Sans',sans-serif;background:var(--cream);color:var(--char);min-height:100vh;min-height:-webkit-fill-available;overflow-x:hidden}
+::-webkit-scrollbar{width:0;height:0}
+
+/* HEADER */
+.hdr{background:var(--sage-dk);padding:max(52px,calc(40px + env(safe-area-inset-top))) 20px 18px;position:relative;}
+.hdr::before{content:'';position:absolute;top:-50px;right:-50px;width:200px;height:200px;background:rgba(255,255,255,.05);border-radius:50%;pointer-events:none;z-index:0}
+.hdr::after{content:'';position:absolute;bottom:-70px;left:-30px;width:160px;height:160px;background:rgba(255,255,255,.04);border-radius:50%;pointer-events:none;z-index:0}
+.hdr-top{display:flex;align-items:flex-start;justify-content:space-between;gap:12px;position:relative;z-index:2}
+.hdr-titles{flex:1;min-width:0;position:relative;z-index:2}
+.hdr-label{font-size:10px;font-weight:600;letter-spacing:2.5px;text-transform:uppercase;color:var(--sage-lt);margin-bottom:5px}
+.hdr-name{font-family:'Fraunces',serif;font-size:30px;font-weight:300;color:#fff;line-height:1.1}
+.hdr-name em{font-style:italic;color:var(--terra-lt)}
+.edit-hdr-btn{background:rgba(255,255,255,.15);border:1.5px solid rgba(255,255,255,.3);border-radius:10px;padding:9px 15px;color:#fff;font-size:13px;font-weight:600;cursor:pointer;white-space:nowrap;flex-shrink:0;position:relative;z-index:10;-webkit-appearance:none;appearance:none;touch-action:manipulation}
+.edit-hdr-btn:active{background:rgba(255,255,255,.28)}
+.hdr-pills{margin-top:12px;display:flex;gap:7px;flex-wrap:wrap;position:relative;z-index:2}
+.pill{display:inline-flex;align-items:center;gap:4px;background:rgba(255,255,255,.11);border:1px solid rgba(255,255,255,.18);border-radius:20px;padding:5px 11px;font-size:11.5px;color:#fff}
+.pill b{font-weight:600}
+
+/* TIMER BAR */
+.timer-bar{background:linear-gradient(135deg,#3e5e42 0%,var(--sage-dk) 100%);padding:12px 18px;display:flex;align-items:center;justify-content:space-between}
+.t-left{display:flex;align-items:center;gap:9px}
+.t-icon{font-size:20px}
+.t-label{font-size:9px;letter-spacing:1.5px;text-transform:uppercase;color:var(--sage-lt)}
+.t-count{font-family:'Fraunces',serif;font-size:20px;font-weight:300;color:#fff;line-height:1.1;margin-top:1px}
+.t-right{display:flex;gap:7px}
+.t-stat{text-align:center;background:rgba(255,255,255,.09);border-radius:9px;padding:5px 9px;min-width:48px}
+.t-stat-val{font-size:15px;font-weight:600;color:#fff;line-height:1}
+.t-stat-lbl{font-size:8.5px;color:var(--sage-lt);text-transform:uppercase;letter-spacing:.5px;margin-top:2px}
+
+/* EDIT BANNER */
+.edit-banner{display:none;background:var(--terra);color:#fff;padding:9px 16px;font-size:13px;font-weight:500;position:sticky;top:0;z-index:90;align-items:center;justify-content:space-between;gap:8px}
+.edit-banner.show{display:flex}
+.eb-done{background:rgba(255,255,255,.2);border:1px solid rgba(255,255,255,.35);border-radius:8px;padding:5px 14px;color:#fff;font-size:12px;font-weight:600;cursor:pointer;white-space:nowrap}
+
+/* TAB BAR */
+.tab-bar{background:var(--card);border-bottom:1px solid var(--lgray);display:flex;overflow-x:auto;scrollbar-width:none;position:sticky;top:0;z-index:80;box-shadow:0 2px 10px rgba(44,44,44,.06)}
+.tab-bar::-webkit-scrollbar{display:none}
+.tab-btn{flex-shrink:0;padding:13px 16px;font-family:'DM Sans',sans-serif;font-size:13px;font-weight:500;color:var(--gray);background:none;border:none;cursor:pointer;border-bottom:2.5px solid transparent;white-space:nowrap;position:relative}
+.tab-btn.active{color:var(--sage-dk);border-bottom-color:var(--sage-dk)}
+.tab-dot{display:none;position:absolute;top:9px;right:7px;width:6px;height:6px;background:var(--terra);border-radius:50%}
+.tab-btn.has-note .tab-dot{display:block}
+
+/* MAIN */
+.main{padding:16px 14px calc(70px + env(safe-area-inset-bottom));max-width:500px;margin:0 auto}
+.section{display:none}.section.active{display:block}
+
+/* EDIT MODE - highlight all editable elements */
+[contenteditable]{outline:none;cursor:text}
+
+/* When edit mode is on, highlight everything editable */
+.edit-mode .meal-name,
+.edit-mode .meal-preview,
+.edit-mode .ing-qty,
+.edit-mode .ing-item > span:not(.ing-del):not(.ing-qty),
+.edit-mode .day-hdr,
+.edit-mode .day-sub,
+.edit-mode .adv-title,
+.edit-mode .adv-text,
+.edit-mode .tip-box,
+.edit-mode .check-label,
+.edit-mode .cg-title,
+.edit-mode .hdr-label,
+.edit-mode .sect-lbl,
+.edit-mode .sect-sub,
+.edit-mode .cl-hdr,
+.edit-mode .cl-sub,
+.edit-mode .notes-title,
+.edit-mode .hdr-name span,
+.edit-mode .hdr-name em,
+.edit-mode .pill b,
+.edit-mode [contenteditable="true"] {
+  background:rgba(78,114,83,.09);
+  border-radius:5px;
+  padding:2px 4px;
+  min-height:20px;
+  display:inline-block;
+}
+.edit-mode .meal-preview,
+.edit-mode .day-sub,
+.edit-mode .sect-sub,
+.edit-mode .cl-sub,
+.edit-mode .adv-text {
+  display:block;
+}
+.edit-mode [contenteditable="true"]:focus {
+  background:rgba(78,114,83,.18)!important;
+  box-shadow:0 0 0 2px rgba(78,114,83,.35);
+  border-radius:5px;
+  outline:none;
+}
+
+/* DAY HEADER */
+.day-hdr{font-family:'Fraunces',serif;font-size:24px;font-weight:300;color:var(--char);margin-bottom:2px}
+.day-sub{font-size:11px;color:var(--gray);letter-spacing:1px;text-transform:uppercase;margin-bottom:14px}
+
+/* NOTES */
+.notes-block{background:var(--card);border-radius:var(--r);box-shadow:var(--sh);margin-bottom:12px;overflow:hidden}
+.notes-hdr{display:flex;align-items:center;gap:10px;padding:13px 15px;cursor:pointer;user-select:none}
+.notes-ico{font-size:15px}
+.notes-title{flex:1;font-size:13.5px;font-weight:500}
+.notes-badge{background:var(--sage-lt);color:var(--sage-dk);font-size:10px;font-weight:600;padding:2px 8px;border-radius:10px;display:none}
+.notes-body{max-height:0;overflow:hidden;transition:max-height .3s cubic-bezier(.4,0,.2,1)}
+.notes-block.open .notes-body{max-height:500px}
+.notes-block.open .chev{transform:rotate(90deg)}
+.notes-inner{padding:0 15px 14px;border-top:1px solid var(--warm)}
+.notes-ta{width:100%;margin-top:10px;min-height:80px;padding:10px 12px;border:1.5px solid var(--lgray);border-radius:10px;font-family:'DM Sans',sans-serif;font-size:14px;color:var(--char);background:var(--cream);resize:none;outline:none;line-height:1.5;transition:border-color .2s}
+.notes-ta:focus{border-color:var(--sage)}
+.notes-ta::placeholder{color:var(--lgray)}
+.notes-foot{display:flex;align-items:center;gap:10px;margin-top:8px}
+.notes-save{padding:8px 18px;background:var(--sage-dk);color:#fff;border:none;border-radius:8px;font-family:'DM Sans',sans-serif;font-size:13px;font-weight:500;cursor:pointer}
+.notes-save:active{opacity:.8}
+.saved-msg{font-size:12px;color:var(--sage);opacity:0;transition:opacity .3s}
+.saved-msg.show{opacity:1}
+
+/* MEAL CARD */
+.meal-card{background:var(--card);border-radius:var(--r);margin-bottom:11px;box-shadow:var(--sh);overflow:hidden}
+.meal-card:active{box-shadow:var(--sh2)}
+.meal-hdr{display:flex;align-items:center;gap:11px;padding:13px 15px;cursor:pointer;user-select:none}
+.meal-ico{width:38px;height:38px;border-radius:10px;display:flex;align-items:center;justify-content:center;font-size:18px;flex-shrink:0}
+.ico-c{background:#FFF3E0}.ico-s{background:#F1F8E9}.ico-p{background:#E8F5E9}.ico-d{background:#E3F2FD}
+.meal-meta{flex:1;min-width:0}
+.meal-name{font-weight:500;font-size:14px;color:var(--char)}
+.meal-preview{font-size:12px;color:var(--gray);margin-top:2px;white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
+.chev{font-size:16px;color:var(--lgray);transition:transform .25s;flex-shrink:0}
+.meal-card.open .chev{transform:rotate(90deg)}
+.meal-body{max-height:0;overflow:hidden;transition:max-height .4s cubic-bezier(.4,0,.2,1)}
+.meal-card.open .meal-body{max-height:1400px}
+.meal-body-inner{padding:0 15px 15px;border-top:1px solid var(--warm)}
+
+/* EDIT CONTROLS */
+.edit-controls{display:none;margin-top:10px;gap:8px;flex-wrap:wrap}
+.edit-mode .edit-controls{display:flex}
+.ec-btn{padding:6px 12px;border-radius:8px;border:1.5px solid var(--lgray);background:none;font-size:12px;color:var(--gray);cursor:pointer;font-family:'DM Sans',sans-serif;display:flex;align-items:center;gap:5px}
+.ec-btn:active{background:var(--warm)}
+.ec-btn.del{border-color:#ffcdd2;color:#e57373}
+.ec-btn.del:active{background:#ffebee}
+.ec-btn.add{border-color:var(--sage-lt);color:var(--sage-dk)}
+.ec-btn.add:active{background:#e8f5e9}
+
+/* INGREDIENTS */
+.ing-list{list-style:none;margin-top:10px}
+.ing-item{display:flex;align-items:flex-start;gap:8px;padding:6px 0;border-bottom:1px solid var(--warm);font-size:14px;line-height:1.4}
+.ing-item:last-child{border-bottom:none}
+.ing-item::before{content:'·';color:var(--sage);font-size:20px;line-height:1;flex-shrink:0;margin-top:-2px}
+.ing-qty{font-weight:500;color:var(--sage-dk);white-space:nowrap;flex-shrink:0}
+.ing-del{display:none;margin-left:auto;background:none;border:none;color:#e57373;font-size:17px;cursor:pointer;padding:0 4px;flex-shrink:0;line-height:1}
+.edit-mode .ing-del{display:block}
+
+.tip-box{margin-top:10px;background:var(--warm);border-radius:10px;padding:10px 12px;font-size:12.5px;color:var(--gray);font-style:italic;line-height:1.5}
+.tip-box::before{content:'💡 ';font-style:normal}
+
+/* PHOTOS */
+.photos-sec{margin-top:12px;padding-top:10px;border-top:1.5px dashed var(--lgray)}
+.photos-lbl{font-size:10px;font-weight:600;letter-spacing:1px;text-transform:uppercase;color:var(--gray);margin-bottom:8px}
+.photos-grid{display:flex;gap:8px;flex-wrap:wrap;align-items:flex-start}
+.p-thumb{width:70px;height:70px;border-radius:10px;object-fit:cover;cursor:pointer;flex-shrink:0}
+.p-thumb:active{transform:scale(.92)}
+.add-p-btn{width:70px;height:70px;border-radius:10px;border:1.5px dashed var(--lgray);background:var(--warm);display:flex;flex-direction:column;align-items:center;justify-content:center;gap:2px;cursor:pointer;flex-shrink:0}
+.add-p-btn:active{background:var(--lgray)}
+.add-p-btn span:first-child{font-size:22px;color:var(--sage-dk)}
+.add-p-btn span:last-child{font-size:9px;color:var(--gray);font-weight:600;letter-spacing:.5px}
+
+/* ADD MEAL BTN */
+.add-meal-btn{display:none;width:100%;padding:12px;border:1.5px dashed var(--sage-lt);border-radius:var(--r);background:none;color:var(--sage-dk);font-family:'DM Sans',sans-serif;font-size:13px;font-weight:500;cursor:pointer;margin-bottom:12px}
+.edit-mode .add-meal-btn{display:block}
+.add-meal-btn:active{background:rgba(78,114,83,.07)}
+
+/* ADVICE */
+.adv-card{background:var(--card);border-radius:var(--r);margin-bottom:11px;box-shadow:var(--sh);overflow:hidden}
+.adv-hdr{display:flex;align-items:center;gap:11px;padding:13px 15px;cursor:pointer;user-select:none}
+.adv-ico{width:36px;height:36px;border-radius:10px;display:flex;align-items:center;justify-content:center;font-size:17px;flex-shrink:0}
+.adv-title{font-weight:500;font-size:14px;flex:1}
+.adv-del{display:none;background:none;border:none;color:#e57373;font-size:17px;cursor:pointer;padding:4px;line-height:1}
+.edit-mode .adv-del{display:block}
+.adv-body{max-height:0;overflow:hidden;transition:max-height .35s cubic-bezier(.4,0,.2,1)}
+.adv-card.open .adv-body{max-height:1000px}
+.adv-card.open .chev{transform:rotate(90deg)}
+.adv-inner{padding:0 15px 15px;border-top:1px solid var(--warm)}
+.adv-text{font-size:13.5px;line-height:1.65;color:var(--gray);margin-top:10px}
+.add-adv-btn{display:none;width:100%;padding:12px;border:1.5px dashed var(--sage-lt);border-radius:var(--r);background:none;color:var(--sage-dk);font-family:'DM Sans',sans-serif;font-size:13px;font-weight:500;cursor:pointer;margin-bottom:12px}
+.edit-mode .add-adv-btn{display:block}
+.add-adv-btn:active{background:rgba(78,114,83,.07)}
+
+/* CHECKLIST */
+.cl-hdr{font-family:'Fraunces',serif;font-size:22px;font-weight:300;margin-bottom:3px}
+.cl-sub{font-size:11px;color:var(--gray);letter-spacing:1px;text-transform:uppercase;margin-bottom:14px}
+.spesa-photo-wrap{background:var(--card);border-radius:var(--r);box-shadow:var(--sh);padding:14px 15px;margin-bottom:12px}
+.spesa-photo-title{font-size:11px;font-weight:600;letter-spacing:1.5px;text-transform:uppercase;color:var(--sage-dk);margin-bottom:10px}
+.spesa-photos-grid{display:flex;gap:8px;flex-wrap:wrap;align-items:flex-start}
+.prog-wrap{background:var(--card);border-radius:var(--r);padding:14px 15px;margin-bottom:12px;box-shadow:var(--sh)}
+.prog-row{display:flex;justify-content:space-between;font-size:13px;margin-bottom:8px}
+.prog-row span:last-child{font-weight:600;color:var(--sage-dk)}
+.prog-bar{height:8px;background:var(--warm);border-radius:4px;overflow:hidden}
+.prog-fill{height:100%;background:linear-gradient(90deg,var(--sage-lt),var(--sage-dk));border-radius:4px;transition:width .4s cubic-bezier(.4,0,.2,1)}
+.cl-actions{display:flex;gap:8px;margin-top:10px}
+.cl-act-btn{flex:1;padding:9px;background:none;border:1.5px solid var(--lgray);border-radius:9px;font-family:'DM Sans',sans-serif;font-size:12px;color:var(--gray);cursor:pointer}
+.cl-act-btn:active{background:var(--warm)}
+.check-group{background:var(--card);border-radius:var(--r);box-shadow:var(--sh);overflow:hidden;margin-bottom:11px}
+.cg-title-row{display:flex;align-items:center;justify-content:space-between;padding:11px 15px 8px;border-bottom:1px solid var(--warm)}
+.cg-title{font-size:11px;font-weight:600;letter-spacing:1.5px;text-transform:uppercase;color:var(--sage-dk)}
+.cg-del{display:none;background:none;border:none;color:#e57373;font-size:15px;cursor:pointer;padding:2px 4px}
+.edit-mode .cg-del{display:block}
+.check-item{display:flex;align-items:center;gap:11px;padding:11px 15px;border-bottom:1px solid var(--warm);cursor:pointer;position:relative}
+.check-item:last-child{border-bottom:none}
+.check-item:active{background:var(--warm)}
+.check-box{width:22px;height:22px;border-radius:6px;border:2px solid var(--lgray);display:flex;align-items:center;justify-content:center;flex-shrink:0;transition:all .2s}
+.check-item.checked .check-box{background:var(--sage);border-color:var(--sage)}
+.check-item.checked .check-box::after{content:'✓';color:#fff;font-size:13px;font-weight:700}
+.check-label{font-size:14px;color:var(--char);line-height:1.4;flex:1;transition:color .2s}
+.check-item.checked .check-label{color:var(--gray);text-decoration:line-through}
+.ci-del{display:none;background:none;border:none;color:#e57373;font-size:16px;cursor:pointer;padding:4px;margin-left:auto;flex-shrink:0}
+.edit-mode .ci-del{display:block}
+.add-ci-btn{display:none;width:100%;padding:10px 15px;background:none;border:none;font-family:'DM Sans',sans-serif;font-size:13px;color:var(--sage-dk);cursor:pointer;text-align:left;border-top:1px dashed var(--lgray)}
+.edit-mode .add-ci-btn{display:block}
+.add-ci-btn:active{background:var(--warm)}
+.add-cg-btn{display:none;width:100%;padding:11px;border:1.5px dashed var(--sage-lt);border-radius:var(--r);background:none;color:var(--sage-dk);font-family:'DM Sans',sans-serif;font-size:13px;font-weight:500;cursor:pointer;margin-bottom:11px}
+.edit-mode .add-cg-btn{display:block}
+.add-cg-btn:active{background:rgba(78,114,83,.07)}
+
+/* STATS */
+.stats-hdr{font-family:'Fraunces',serif;font-size:22px;font-weight:300;margin-bottom:3px}
+.stats-sub{font-size:11px;color:var(--gray);letter-spacing:1px;text-transform:uppercase;margin-bottom:14px}
+.big-timer{background:linear-gradient(135deg,var(--sage-dk),#3a5e3e);border-radius:var(--r);padding:20px;box-shadow:var(--sh2);margin-bottom:14px;color:#fff;text-align:center}
+.bt-label{font-size:10px;letter-spacing:2px;text-transform:uppercase;color:var(--sage-lt);margin-bottom:6px}
+.bt-val{font-family:'Fraunces',serif;font-size:44px;font-weight:300;line-height:1}
+.bt-sub{font-size:12px;color:var(--sage-lt);margin-top:4px}
+.bt-row{display:flex;align-items:center;justify-content:center;gap:10px;margin-top:14px;flex-wrap:wrap}
+.start-date-input{background:rgba(255,255,255,.12);border:1px solid rgba(255,255,255,.25);border-radius:9px;padding:7px 12px;color:#fff;font-size:13px;font-family:'DM Sans',sans-serif;outline:none;color-scheme:dark}
+.bt-set-btn{background:rgba(255,255,255,.15);border:1px solid rgba(255,255,255,.3);border-radius:9px;padding:8px 16px;color:#fff;font-size:13px;cursor:pointer;font-family:'DM Sans',sans-serif}
+.bt-set-btn:active{background:rgba(255,255,255,.25)}
+.stats-grid{display:grid;grid-template-columns:1fr 1fr;gap:10px;margin-bottom:14px}
+.stat-card{background:var(--card);border-radius:var(--r);padding:16px 14px;box-shadow:var(--sh)}
+.sc-icon{font-size:24px;margin-bottom:6px}
+.sc-val{font-family:'Fraunces',serif;font-size:26px;font-weight:300;color:var(--sage-dk);line-height:1}
+.sc-lbl{font-size:11px;color:var(--gray);margin-top:4px;line-height:1.3}
+.stat-card.wide{grid-column:1/-1}
+.streak-bar{display:flex;gap:4px;margin-top:10px;flex-wrap:wrap}
+.sd{width:28px;height:28px;border-radius:8px;display:flex;align-items:center;justify-content:center;font-size:11px;font-weight:500}
+.sd.done{background:var(--sage);color:#fff}
+.sd.miss{background:var(--warm);color:var(--lgray)}
+
+/* LIGHTBOX */
+.lightbox{display:none;position:fixed;inset:0;background:rgba(0,0,0,.9);z-index:999;flex-direction:column;align-items:center;justify-content:center;padding:20px;padding-bottom:max(20px,env(safe-area-inset-bottom))}
+.lightbox.open{display:flex}
+.lb-img{max-width:100%;max-height:72vh;border-radius:12px;object-fit:contain}
+.lb-actions{display:flex;gap:12px;margin-top:18px}
+.lb-btn{padding:10px 22px;border-radius:22px;border:none;font-family:'DM Sans',sans-serif;font-size:14px;font-weight:500;cursor:pointer}
+.lb-btn:active{opacity:.8}
+.lb-close{background:rgba(255,255,255,.15);color:#fff}
+.lb-del{background:var(--terra);color:#fff}
+
+/* MODAL */
+.modal-overlay{display:none;position:fixed;inset:0;background:rgba(0,0,0,.5);z-index:500;align-items:flex-end;justify-content:center}
+.modal-overlay.open{display:flex}
+.modal{background:var(--card);border-radius:20px 20px 0 0;padding:20px 20px calc(20px + env(safe-area-inset-bottom));width:100%;max-width:500px;max-height:85vh;overflow-y:auto}
+.modal-title{font-family:'Fraunces',serif;font-size:20px;font-weight:300;margin-bottom:14px}
+.modal-label{font-size:12px;font-weight:500;color:var(--gray);margin-bottom:5px;display:block;margin-top:8px}
+.modal-input{width:100%;padding:11px 13px;border:1.5px solid var(--lgray);border-radius:10px;font-family:'DM Sans',sans-serif;font-size:14px;color:var(--char);background:var(--cream);outline:none;transition:border-color .2s}
+.modal-input:focus{border-color:var(--sage)}
+.modal-textarea{width:100%;padding:11px 13px;border:1.5px solid var(--lgray);border-radius:10px;font-family:'DM Sans',sans-serif;font-size:14px;color:var(--char);background:var(--cream);outline:none;resize:none;min-height:80px;line-height:1.5}
+.modal-textarea:focus{border-color:var(--sage)}
+.modal-actions{display:flex;gap:10px;margin-top:16px}
+.modal-btn{flex:1;padding:12px;border-radius:10px;border:none;font-family:'DM Sans',sans-serif;font-size:14px;font-weight:500;cursor:pointer}
+.modal-btn.primary{background:var(--sage-dk);color:#fff}
+.modal-btn.secondary{background:var(--warm);color:var(--gray)}
+.modal-btn:active{opacity:.85}
+
+/* Edit mode ring on interactive cards */
+.edit-mode .meal-card{box-shadow:0 0 0 2px rgba(78,114,83,.22),var(--sh);}
+.edit-mode .check-group{box-shadow:0 0 0 2px rgba(78,114,83,.18),var(--sh);}
+.edit-mode .adv-card{box-shadow:0 0 0 2px rgba(78,114,83,.18),var(--sh);}
+.edit-mode .ing-item>span[contenteditable="true"]{background:rgba(78,114,83,.09);border-radius:4px;padding:1px 4px;display:inline-block;min-width:18px;}
+.edit-mode .ing-item>span[contenteditable="true"]:focus{background:rgba(78,114,83,.18)!important;box-shadow:0 0 0 2px rgba(78,114,83,.3);outline:none;}
+
+/* BOTTOM NAV */
+.bottom-nav{position:fixed;bottom:0;left:0;right:0;background:rgba(255,255,255,.96);backdrop-filter:blur(16px);-webkit-backdrop-filter:blur(16px);border-top:1px solid var(--lgray);display:flex;padding-bottom:env(safe-area-inset-bottom);z-index:200;box-shadow:0 -2px 16px rgba(44,44,44,.08)}
+.nav-btn{flex:1;display:flex;flex-direction:column;align-items:center;gap:2px;padding:9px 4px;background:none;border:none;cursor:pointer;font-family:'DM Sans',sans-serif;font-size:9.5px;color:var(--gray);letter-spacing:.3px}
+.nav-btn .ni{font-size:22px;line-height:1}
+.nav-btn.active{color:var(--sage-dk)}
+
+.sect-lbl{font-family:'Fraunces',serif;font-size:22px;font-weight:300;margin-bottom:3px}
+.sect-sub{font-size:11px;color:var(--gray);letter-spacing:1px;text-transform:uppercase;margin-bottom:14px}
+</style>
+</head>
+<body>
+
+<!-- HEADER -->
+<div class="hdr">
+  <div class="hdr-top">
+    <div class="hdr-titles">
+      <div class="hdr-label" contenteditable="false" spellcheck="false">Piano Alimentare</div>
+      <div class="hdr-name"><span contenteditable="false" spellcheck="false">Dieta </span><em contenteditable="false" spellcheck="false">Emma</em></div>
+    </div>
+    <button class="edit-hdr-btn" onclick="toggleEditMode()">✏️ Modifica</button>
+  </div>
+  <div class="hdr-pills">
+    <div class="pill">🔥 <b contenteditable="false" spellcheck="false">1500</b> kcal/g</div>
+    <div class="pill">🌾 <b contenteditable="false" spellcheck="false">45%</b> C</div>
+    <div class="pill">🥩 <b contenteditable="false" spellcheck="false">20%</b> P</div>
+    <div class="pill">🫒 <b contenteditable="false" spellcheck="false">30%</b> G</div>
+  </div>
+</div>
+
+<!-- EDIT BANNER -->
+<div class="edit-banner" id="editBanner">
+  <span>✏️ Modifica attiva — tocca qualsiasi testo</span>
+  <button class="eb-done" onclick="toggleEditMode()">Fatto ✓</button>
+</div>
+
+<!-- TIMER BAR -->
+<div class="timer-bar">
+  <div class="t-left">
+    <div class="t-icon">⏱</div>
+    <div>
+      <div class="t-label">Dieta in corso</div>
+      <div class="t-count" id="timerCount">— giorni</div>
+    </div>
+  </div>
+  <div class="t-right">
+    <div class="t-stat"><div class="t-stat-val" id="tNote">0</div><div class="t-stat-lbl">Note</div></div>
+    <div class="t-stat"><div class="t-stat-val" id="tPhoto">0</div><div class="t-stat-lbl">Foto</div></div>
+    <div class="t-stat"><div class="t-stat-val" id="tCheck">0%</div><div class="t-stat-lbl">Spesa</div></div>
+  </div>
+</div>
+
+<!-- TAB BAR -->
+<div class="tab-bar" id="tabBar">
+  <button class="tab-btn active" data-tab="g1">Giorno 1<span class="tab-dot"></span></button>
+  <button class="tab-btn" data-tab="g2">Giorno 2<span class="tab-dot"></span></button>
+  <button class="tab-btn" data-tab="g3">Giorno 3<span class="tab-dot"></span></button>
+  <button class="tab-btn" data-tab="g4">Giorno 4<span class="tab-dot"></span></button>
+  <button class="tab-btn" data-tab="sabato">Sabato<span class="tab-dot"></span></button>
+  <button class="tab-btn" data-tab="domenica">Domenica<span class="tab-dot"></span></button>
+</div>
+
+<div class="main">
+
+<!-- ══ G1 ══ -->
+<div class="section active" id="g1">
+  <div class="day-hdr" contenteditable="false" spellcheck="false">Giorno 1</div>
+  <div class="day-sub" contenteditable="false" spellcheck="false">Giorno normale</div>
+  <div class="notes-block" id="nb-g1"><div class="notes-hdr" onclick="toggleNotes('g1')"><span class="notes-ico">📝</span><span class="notes-title">Note del giorno</span><span class="notes-badge" id="nbadge-g1">✓</span><span class="chev">›</span></div><div class="notes-body"><div class="notes-inner"><textarea class="notes-ta" id="nta-g1" placeholder="Come ti sei sentita? Modifiche, sensazioni…"></textarea><div class="notes-foot"><button class="notes-save" onclick="saveNote('g1')">Salva</button><span class="saved-msg" id="nsaved-g1">Salvata ✓</span></div></div></div></div>
+  <div id="meals-g1">
+  <div class="meal-card" data-meal="g1-colazione"><div class="meal-hdr" onclick="toggleMeal(this,event)"><div class="meal-ico ico-c">🌅</div><div class="meal-meta"><div class="meal-name" contenteditable="false" spellcheck="false">Colazione</div><div class="meal-preview" contenteditable="false" spellcheck="false">Fette integrali, yogurt greco, mirtilli</div></div><span class="chev">›</span></div><div class="meal-body"><div class="meal-body-inner"><ul class="ing-list"><li class="ing-item"><span class="ing-qty" contenteditable="false" spellcheck="false">50 g</span><span contenteditable="false" spellcheck="false">fette di pane integrale (preferibilmente tostato)</span><button class="ing-del" onclick="delIng(this)">×</button></li><li class="ing-item"><span class="ing-qty" contenteditable="false" spellcheck="false">100 g</span><span contenteditable="false" spellcheck="false">yogurt greco (come strato e topping)</span><button class="ing-del" onclick="delIng(this)">×</button></li><li class="ing-item"><span class="ing-qty" contenteditable="false" spellcheck="false">60 g</span><span contenteditable="false" spellcheck="false">mirtilli</span><button class="ing-del" onclick="delIng(this)">×</button></li><li class="ing-item"><span class="ing-qty" contenteditable="false" spellcheck="false">1 cucchiaino</span><span contenteditable="false" spellcheck="false">burro d'arachidi 100%</span><button class="ing-del" onclick="delIng(this)">×</button></li></ul><div class="edit-controls"><button class="ec-btn add" onclick="addIngredient(this)">＋ Ingrediente</button><button class="ec-btn del" onclick="deleteMealCard(this)">🗑 Elimina</button></div><div class="photos-sec" data-meal="g1-colazione"><div class="photos-lbl">📸 Foto pasto</div><div class="photos-grid"></div><input type="file" accept="image/*" multiple style="display:none" onchange="handlePhotos('g1-colazione',this)"></div></div></div></div>
+  <div class="meal-card" data-meal="g1-sm"><div class="meal-hdr" onclick="toggleMeal(this,event)"><div class="meal-ico ico-s">🍎</div><div class="meal-meta"><div class="meal-name" contenteditable="false" spellcheck="false">Spuntino Mattina</div><div class="meal-preview" contenteditable="false" spellcheck="false">Mela + mandorle</div></div><span class="chev">›</span></div><div class="meal-body"><div class="meal-body-inner"><ul class="ing-list"><li class="ing-item"><span class="ing-qty" contenteditable="false" spellcheck="false">1</span><span contenteditable="false" spellcheck="false">mela</span><button class="ing-del" onclick="delIng(this)">×</button></li><li class="ing-item"><span class="ing-qty" contenteditable="false" spellcheck="false">8</span><span contenteditable="false" spellcheck="false">mandorle</span><button class="ing-del" onclick="delIng(this)">×</button></li></ul><div class="edit-controls"><button class="ec-btn add" onclick="addIngredient(this)">＋ Ingrediente</button><button class="ec-btn del" onclick="deleteMealCard(this)">🗑 Elimina</button></div><div class="photos-sec" data-meal="g1-sm"><div class="photos-lbl">📸 Foto pasto</div><div class="photos-grid"></div><input type="file" accept="image/*" multiple style="display:none" onchange="handlePhotos('g1-sm',this)"></div></div></div></div>
+  <div class="meal-card" data-meal="g1-pranzo"><div class="meal-hdr" onclick="toggleMeal(this,event)"><div class="meal-ico ico-p">🍝</div><div class="meal-meta"><div class="meal-name" contenteditable="false" spellcheck="false">Pranzo</div><div class="meal-preview" contenteditable="false" spellcheck="false">Pasta con lenticchie e spinaci</div></div><span class="chev">›</span></div><div class="meal-body"><div class="meal-body-inner"><ul class="ing-list"><li class="ing-item"><span class="ing-qty" contenteditable="false" spellcheck="false">60 g</span><span contenteditable="false" spellcheck="false">pasta</span><button class="ing-del" onclick="delIng(this)">×</button></li><li class="ing-item"><span class="ing-qty" contenteditable="false" spellcheck="false">120 g</span><span contenteditable="false" spellcheck="false">lenticchie</span><button class="ing-del" onclick="delIng(this)">×</button></li><li class="ing-item"><span class="ing-qty" contenteditable="false" spellcheck="false">—</span><span contenteditable="false" spellcheck="false">spinaci o verdura cotta a piacere</span><button class="ing-del" onclick="delIng(this)">×</button></li><li class="ing-item"><span class="ing-qty" contenteditable="false" spellcheck="false">2 cucchiaini</span><span contenteditable="false" spellcheck="false">olio EVO</span><button class="ing-del" onclick="delIng(this)">×</button></li></ul><div class="edit-controls"><button class="ec-btn add" onclick="addIngredient(this)">＋ Ingrediente</button><button class="ec-btn del" onclick="deleteMealCard(this)">🗑 Elimina</button></div><div class="photos-sec" data-meal="g1-pranzo"><div class="photos-lbl">📸 Foto pasto</div><div class="photos-grid"></div><input type="file" accept="image/*" multiple style="display:none" onchange="handlePhotos('g1-pranzo',this)"></div></div></div></div>
+  <div class="meal-card" data-meal="g1-sp"><div class="meal-hdr" onclick="toggleMeal(this,event)"><div class="meal-ico ico-s">🍫</div><div class="meal-meta"><div class="meal-name" contenteditable="false" spellcheck="false">Spuntino Pomeriggio</div><div class="meal-preview" contenteditable="false" spellcheck="false">Barretta Misura + cioccolato fondente</div></div><span class="chev">›</span></div><div class="meal-body"><div class="meal-body-inner"><ul class="ing-list"><li class="ing-item"><span class="ing-qty" contenteditable="false" spellcheck="false">1</span><span contenteditable="false" spellcheck="false">barretta Misura Eurospin (senza zuccheri aggiunti)</span><button class="ing-del" onclick="delIng(this)">×</button></li><li class="ing-item"><span class="ing-qty" contenteditable="false" spellcheck="false">20 g</span><span contenteditable="false" spellcheck="false">cioccolato fondente</span><button class="ing-del" onclick="delIng(this)">×</button></li></ul><div class="edit-controls"><button class="ec-btn add" onclick="addIngredient(this)">＋ Ingrediente</button><button class="ec-btn del" onclick="deleteMealCard(this)">🗑 Elimina</button></div><div class="photos-sec" data-meal="g1-sp"><div class="photos-lbl">📸 Foto pasto</div><div class="photos-grid"></div><input type="file" accept="image/*" multiple style="display:none" onchange="handlePhotos('g1-sp',this)"></div></div></div></div>
+  <div class="meal-card" data-meal="g1-cena"><div class="meal-hdr" onclick="toggleMeal(this,event)"><div class="meal-ico ico-d">🐟</div><div class="meal-meta"><div class="meal-name" contenteditable="false" spellcheck="false">Cena</div><div class="meal-preview" contenteditable="false" spellcheck="false">Merluzzo con patate e fagiolini</div></div><span class="chev">›</span></div><div class="meal-body"><div class="meal-body-inner"><ul class="ing-list"><li class="ing-item"><span class="ing-qty" contenteditable="false" spellcheck="false">300 g</span><span contenteditable="false" spellcheck="false">patate al vapore o al forno</span><button class="ing-del" onclick="delIng(this)">×</button></li><li class="ing-item"><span class="ing-qty" contenteditable="false" spellcheck="false">150 g</span><span contenteditable="false" spellcheck="false">merluzzo</span><button class="ing-del" onclick="delIng(this)">×</button></li><li class="ing-item"><span class="ing-qty" contenteditable="false" spellcheck="false">100 g</span><span contenteditable="false" spellcheck="false">fagiolini</span><button class="ing-del" onclick="delIng(this)">×</button></li><li class="ing-item"><span class="ing-qty" contenteditable="false" spellcheck="false">2 cucchiaini</span><span contenteditable="false" spellcheck="false">olio EVO</span><button class="ing-del" onclick="delIng(this)">×</button></li></ul><div class="tip-box" contenteditable="false" spellcheck="false">Idea tortino: mescola patate e merluzzo con un po' di pepe e 1 cucchiaio di pangrattato.</div><div class="edit-controls"><button class="ec-btn add" onclick="addIngredient(this)">＋ Ingrediente</button><button class="ec-btn del" onclick="deleteMealCard(this)">🗑 Elimina</button></div><div class="photos-sec" data-meal="g1-cena"><div class="photos-lbl">📸 Foto pasto</div><div class="photos-grid"></div><input type="file" accept="image/*" multiple style="display:none" onchange="handlePhotos('g1-cena',this)"></div></div></div></div>
+  </div>
+  <button class="add-meal-btn" onclick="addMeal('g1')">＋ Aggiungi pasto</button>
+</div>
+
+<!-- ══ G2 ══ -->
+<div class="section" id="g2">
+  <div class="day-hdr" contenteditable="false" spellcheck="false">Giorno 2</div>
+  <div class="day-sub" contenteditable="false" spellcheck="false">Giorno normale</div>
+  <div class="notes-block" id="nb-g2"><div class="notes-hdr" onclick="toggleNotes('g2')"><span class="notes-ico">📝</span><span class="notes-title">Note del giorno</span><span class="notes-badge" id="nbadge-g2">✓</span><span class="chev">›</span></div><div class="notes-body"><div class="notes-inner"><textarea class="notes-ta" id="nta-g2" placeholder="Come ti sei sentita? Modifiche, sensazioni…"></textarea><div class="notes-foot"><button class="notes-save" onclick="saveNote('g2')">Salva</button><span class="saved-msg" id="nsaved-g2">Salvata ✓</span></div></div></div></div>
+  <div id="meals-g2">
+  <div class="meal-card" data-meal="g2-col"><div class="meal-hdr" onclick="toggleMeal(this,event)"><div class="meal-ico ico-c">🌅</div><div class="meal-meta"><div class="meal-name" contenteditable="false" spellcheck="false">Colazione</div><div class="meal-preview" contenteditable="false" spellcheck="false">Latte + cereali Misura extrafondente</div></div><span class="chev">›</span></div><div class="meal-body"><div class="meal-body-inner"><ul class="ing-list"><li class="ing-item"><span class="ing-qty" contenteditable="false" spellcheck="false">150 ml</span><span contenteditable="false" spellcheck="false">latte parzialmente scremato</span><button class="ing-del" onclick="delIng(this)">×</button></li><li class="ing-item"><span class="ing-qty" contenteditable="false" spellcheck="false">30 g</span><span contenteditable="false" spellcheck="false">cereali Misura extrafondente o frutti rossi</span><button class="ing-del" onclick="delIng(this)">×</button></li></ul><div class="edit-controls"><button class="ec-btn add" onclick="addIngredient(this)">＋ Ingrediente</button><button class="ec-btn del" onclick="deleteMealCard(this)">🗑 Elimina</button></div><div class="photos-sec" data-meal="g2-col"><div class="photos-lbl">📸 Foto pasto</div><div class="photos-grid"></div><input type="file" accept="image/*" multiple style="display:none" onchange="handlePhotos('g2-col',this)"></div></div></div></div>
+  <div class="meal-card" data-meal="g2-sm"><div class="meal-hdr" onclick="toggleMeal(this,event)"><div class="meal-ico ico-s">🥝</div><div class="meal-meta"><div class="meal-name" contenteditable="false" spellcheck="false">Spuntino Mattina</div><div class="meal-preview" contenteditable="false" spellcheck="false">Kiwi + noci</div></div><span class="chev">›</span></div><div class="meal-body"><div class="meal-body-inner"><ul class="ing-list"><li class="ing-item"><span class="ing-qty" contenteditable="false" spellcheck="false">2</span><span contenteditable="false" spellcheck="false">kiwi o 150 g frutta a piacere (no banana, cachi, fichi, uva)</span><button class="ing-del" onclick="delIng(this)">×</button></li><li class="ing-item"><span class="ing-qty" contenteditable="false" spellcheck="false">2</span><span contenteditable="false" spellcheck="false">noci</span><button class="ing-del" onclick="delIng(this)">×</button></li></ul><div class="edit-controls"><button class="ec-btn add" onclick="addIngredient(this)">＋ Ingrediente</button><button class="ec-btn del" onclick="deleteMealCard(this)">🗑 Elimina</button></div><div class="photos-sec" data-meal="g2-sm"><div class="photos-lbl">📸 Foto pasto</div><div class="photos-grid"></div><input type="file" accept="image/*" multiple style="display:none" onchange="handlePhotos('g2-sm',this)"></div></div></div></div>
+  <div class="meal-card" data-meal="g2-pranzo"><div class="meal-hdr" onclick="toggleMeal(this,event)"><div class="meal-ico ico-p">🍝</div><div class="meal-meta"><div class="meal-name" contenteditable="false" spellcheck="false">Pranzo</div><div class="meal-preview" contenteditable="false" spellcheck="false">Pasta al ragù di vitello</div></div><span class="chev">›</span></div><div class="meal-body"><div class="meal-body-inner"><ul class="ing-list"><li class="ing-item"><span class="ing-qty" contenteditable="false" spellcheck="false">80 g</span><span contenteditable="false" spellcheck="false">pasta</span><button class="ing-del" onclick="delIng(this)">×</button></li><li class="ing-item"><span class="ing-qty" contenteditable="false" spellcheck="false">80 g</span><span contenteditable="false" spellcheck="false">sugo e basilico</span><button class="ing-del" onclick="delIng(this)">×</button></li><li class="ing-item"><span class="ing-qty" contenteditable="false" spellcheck="false">100 g</span><span contenteditable="false" spellcheck="false">macinato di vitello magro</span><button class="ing-del" onclick="delIng(this)">×</button></li><li class="ing-item"><span class="ing-qty" contenteditable="false" spellcheck="false">—</span><span contenteditable="false" spellcheck="false">insalata</span><button class="ing-del" onclick="delIng(this)">×</button></li><li class="ing-item"><span class="ing-qty" contenteditable="false" spellcheck="false">2 cucchiaini</span><span contenteditable="false" spellcheck="false">olio EVO</span><button class="ing-del" onclick="delIng(this)">×</button></li></ul><div class="edit-controls"><button class="ec-btn add" onclick="addIngredient(this)">＋ Ingrediente</button><button class="ec-btn del" onclick="deleteMealCard(this)">🗑 Elimina</button></div><div class="photos-sec" data-meal="g2-pranzo"><div class="photos-lbl">📸 Foto pasto</div><div class="photos-grid"></div><input type="file" accept="image/*" multiple style="display:none" onchange="handlePhotos('g2-pranzo',this)"></div></div></div></div>
+  <div class="meal-card" data-meal="g2-sp"><div class="meal-hdr" onclick="toggleMeal(this,event)"><div class="meal-ico ico-s">💪</div><div class="meal-meta"><div class="meal-name" contenteditable="false" spellcheck="false">Spuntino Pomeriggio</div><div class="meal-preview" contenteditable="false" spellcheck="false">Budino proteico My Protein + frutta secca</div></div><span class="chev">›</span></div><div class="meal-body"><div class="meal-body-inner"><ul class="ing-list"><li class="ing-item"><span class="ing-qty" contenteditable="false" spellcheck="false">1</span><span contenteditable="false" spellcheck="false">budino proteico "My Protein"</span><button class="ing-del" onclick="delIng(this)">×</button></li><li class="ing-item"><span class="ing-qty" contenteditable="false" spellcheck="false">8</span><span contenteditable="false" spellcheck="false">mandorle o 2 noci</span><button class="ing-del" onclick="delIng(this)">×</button></li></ul><div class="edit-controls"><button class="ec-btn add" onclick="addIngredient(this)">＋ Ingrediente</button><button class="ec-btn del" onclick="deleteMealCard(this)">🗑 Elimina</button></div><div class="photos-sec" data-meal="g2-sp"><div class="photos-lbl">📸 Foto pasto</div><div class="photos-grid"></div><input type="file" accept="image/*" multiple style="display:none" onchange="handlePhotos('g2-sp',this)"></div></div></div></div>
+  <div class="meal-card" data-meal="g2-cena"><div class="meal-hdr" onclick="toggleMeal(this,event)"><div class="meal-ico ico-d">🥑</div><div class="meal-meta"><div class="meal-name" contenteditable="false" spellcheck="false">Cena</div><div class="meal-preview" contenteditable="false" spellcheck="false">Avocado toast con uova</div></div><span class="chev">›</span></div><div class="meal-body"><div class="meal-body-inner"><ul class="ing-list"><li class="ing-item"><span class="ing-qty" contenteditable="false" spellcheck="false">80 g</span><span contenteditable="false" spellcheck="false">pane tostato</span><button class="ing-del" onclick="delIng(this)">×</button></li><li class="ing-item"><span class="ing-qty" contenteditable="false" spellcheck="false">50 g</span><span contenteditable="false" spellcheck="false">avocado</span><button class="ing-del" onclick="delIng(this)">×</button></li><li class="ing-item"><span class="ing-qty" contenteditable="false" spellcheck="false">2</span><span contenteditable="false" spellcheck="false">uova intere o strapazzate</span><button class="ing-del" onclick="delIng(this)">×</button></li><li class="ing-item"><span class="ing-qty" contenteditable="false" spellcheck="false">—</span><span contenteditable="false" spellcheck="false">insalata e pomodori (contorno)</span><button class="ing-del" onclick="delIng(this)">×</button></li><li class="ing-item"><span class="ing-qty" contenteditable="false" spellcheck="false">1 cucchiaino</span><span contenteditable="false" spellcheck="false">olio EVO</span><button class="ing-del" onclick="delIng(this)">×</button></li></ul><div class="edit-controls"><button class="ec-btn add" onclick="addIngredient(this)">＋ Ingrediente</button><button class="ec-btn del" onclick="deleteMealCard(this)">🗑 Elimina</button></div><div class="photos-sec" data-meal="g2-cena"><div class="photos-lbl">📸 Foto pasto</div><div class="photos-grid"></div><input type="file" accept="image/*" multiple style="display:none" onchange="handlePhotos('g2-cena',this)"></div></div></div></div>
+  </div>
+  <button class="add-meal-btn" onclick="addMeal('g2')">＋ Aggiungi pasto</button>
+</div>
+
+<!-- ══ G3 ══ -->
+<div class="section" id="g3">
+  <div class="day-hdr" contenteditable="false" spellcheck="false">Giorno 3</div>
+  <div class="day-sub" contenteditable="false" spellcheck="false">Giorno normale</div>
+  <div class="notes-block" id="nb-g3"><div class="notes-hdr" onclick="toggleNotes('g3')"><span class="notes-ico">📝</span><span class="notes-title">Note del giorno</span><span class="notes-badge" id="nbadge-g3">✓</span><span class="chev">›</span></div><div class="notes-body"><div class="notes-inner"><textarea class="notes-ta" id="nta-g3" placeholder="Come ti sei sentita? Modifiche, sensazioni…"></textarea><div class="notes-foot"><button class="notes-save" onclick="saveNote('g3')">Salva</button><span class="saved-msg" id="nsaved-g3">Salvata ✓</span></div></div></div></div>
+  <div id="meals-g3">
+  <div class="meal-card" data-meal="g3-col"><div class="meal-hdr" onclick="toggleMeal(this,event)"><div class="meal-ico ico-c">🥞</div><div class="meal-meta"><div class="meal-name" contenteditable="false" spellcheck="false">Colazione</div><div class="meal-preview" contenteditable="false" spellcheck="false">Pancake di avena e banana</div></div><span class="chev">›</span></div><div class="meal-body"><div class="meal-body-inner"><ul class="ing-list"><li class="ing-item"><span class="ing-qty" contenteditable="false" spellcheck="false">40 g</span><span contenteditable="false" spellcheck="false">farina d'avena</span><button class="ing-del" onclick="delIng(this)">×</button></li><li class="ing-item"><span class="ing-qty" contenteditable="false" spellcheck="false">½</span><span contenteditable="false" spellcheck="false">banana schiacciata</span><button class="ing-del" onclick="delIng(this)">×</button></li><li class="ing-item"><span class="ing-qty" contenteditable="false" spellcheck="false">2</span><span contenteditable="false" spellcheck="false">albumi</span><button class="ing-del" onclick="delIng(this)">×</button></li><li class="ing-item"><span class="ing-qty" contenteditable="false" spellcheck="false">1 pizzico</span><span contenteditable="false" spellcheck="false">bicarbonato + succo di limone (per lievitazione)</span><button class="ing-del" onclick="delIng(this)">×</button></li><li class="ing-item"><span class="ing-qty" contenteditable="false" spellcheck="false">1 cucchiaio</span><span contenteditable="false" spellcheck="false">cacao — opzionale, per pancake al cioccolato</span><button class="ing-del" onclick="delIng(this)">×</button></li></ul><div class="tip-box" contenteditable="false" spellcheck="false">Topping: cremina di cacao amaro (1 cucchiaio cacao + acqua q.b.) + 1 cucchiaio marmellata Hero Light.</div><div class="edit-controls"><button class="ec-btn add" onclick="addIngredient(this)">＋ Ingrediente</button><button class="ec-btn del" onclick="deleteMealCard(this)">🗑 Elimina</button></div><div class="photos-sec" data-meal="g3-col"><div class="photos-lbl">📸 Foto pasto</div><div class="photos-grid"></div><input type="file" accept="image/*" multiple style="display:none" onchange="handlePhotos('g3-col',this)"></div></div></div></div>
+  <div class="meal-card" data-meal="g3-sm"><div class="meal-hdr" onclick="toggleMeal(this,event)"><div class="meal-ico ico-s">🥝</div><div class="meal-meta"><div class="meal-name" contenteditable="false" spellcheck="false">Spuntino Mattina</div><div class="meal-preview" contenteditable="false" spellcheck="false">Solo se hai fame</div></div><span class="chev">›</span></div><div class="meal-body"><div class="meal-body-inner"><ul class="ing-list"><li class="ing-item"><span class="ing-qty" contenteditable="false" spellcheck="false">1</span><span contenteditable="false" spellcheck="false">kiwi</span><button class="ing-del" onclick="delIng(this)">×</button></li><li class="ing-item"><span class="ing-qty" contenteditable="false" spellcheck="false">1</span><span contenteditable="false" spellcheck="false">noce</span><button class="ing-del" onclick="delIng(this)">×</button></li></ul><div class="edit-controls"><button class="ec-btn add" onclick="addIngredient(this)">＋ Ingrediente</button><button class="ec-btn del" onclick="deleteMealCard(this)">🗑 Elimina</button></div><div class="photos-sec" data-meal="g3-sm"><div class="photos-lbl">📸 Foto pasto</div><div class="photos-grid"></div><input type="file" accept="image/*" multiple style="display:none" onchange="handlePhotos('g3-sm',this)"></div></div></div></div>
+  <div class="meal-card" data-meal="g3-pranzo"><div class="meal-hdr" onclick="toggleMeal(this,event)"><div class="meal-ico ico-p">🍝</div><div class="meal-meta"><div class="meal-name" contenteditable="false" spellcheck="false">Pranzo</div><div class="meal-preview" contenteditable="false" spellcheck="false">Pasta con lenticchie e bietole</div></div><span class="chev">›</span></div><div class="meal-body"><div class="meal-body-inner"><ul class="ing-list"><li class="ing-item"><span class="ing-qty" contenteditable="false" spellcheck="false">60 g</span><span contenteditable="false" spellcheck="false">pasta</span><button class="ing-del" onclick="delIng(this)">×</button></li><li class="ing-item"><span class="ing-qty" contenteditable="false" spellcheck="false">120 g</span><span contenteditable="false" spellcheck="false">lenticchie</span><button class="ing-del" onclick="delIng(this)">×</button></li><li class="ing-item"><span class="ing-qty" contenteditable="false" spellcheck="false">—</span><span contenteditable="false" spellcheck="false">bietole o verdura cotta a piacere</span><button class="ing-del" onclick="delIng(this)">×</button></li><li class="ing-item"><span class="ing-qty" contenteditable="false" spellcheck="false">1 cucchiaino</span><span contenteditable="false" spellcheck="false">olio EVO</span><button class="ing-del" onclick="delIng(this)">×</button></li></ul><div class="edit-controls"><button class="ec-btn add" onclick="addIngredient(this)">＋ Ingrediente</button><button class="ec-btn del" onclick="deleteMealCard(this)">🗑 Elimina</button></div><div class="photos-sec" data-meal="g3-pranzo"><div class="photos-lbl">📸 Foto pasto</div><div class="photos-grid"></div><input type="file" accept="image/*" multiple style="display:none" onchange="handlePhotos('g3-pranzo',this)"></div></div></div></div>
+  <div class="meal-card" data-meal="g3-sp"><div class="meal-hdr" onclick="toggleMeal(this,event)"><div class="meal-ico ico-s">🥕</div><div class="meal-meta"><div class="meal-name" contenteditable="false" spellcheck="false">Spuntino Pomeriggio</div><div class="meal-preview" contenteditable="false" spellcheck="false">Carote, sedano e fiocchi di latte</div></div><span class="chev">›</span></div><div class="meal-body"><div class="meal-body-inner"><ul class="ing-list"><li class="ing-item"><span class="ing-qty" contenteditable="false" spellcheck="false">—</span><span contenteditable="false" spellcheck="false">carote e sedano</span><button class="ing-del" onclick="delIng(this)">×</button></li><li class="ing-item"><span class="ing-qty" contenteditable="false" spellcheck="false">½ conf.</span><span contenteditable="false" spellcheck="false">fiocchi di latte proteici</span><button class="ing-del" onclick="delIng(this)">×</button></li></ul><div class="edit-controls"><button class="ec-btn add" onclick="addIngredient(this)">＋ Ingrediente</button><button class="ec-btn del" onclick="deleteMealCard(this)">🗑 Elimina</button></div><div class="photos-sec" data-meal="g3-sp"><div class="photos-lbl">📸 Foto pasto</div><div class="photos-grid"></div><input type="file" accept="image/*" multiple style="display:none" onchange="handlePhotos('g3-sp',this)"></div></div></div></div>
+  <div class="meal-card" data-meal="g3-cena"><div class="meal-hdr" onclick="toggleMeal(this,event)"><div class="meal-ico ico-d">🫓</div><div class="meal-meta"><div class="meal-name" contenteditable="false" spellcheck="false">Cena</div><div class="meal-preview" contenteditable="false" spellcheck="false">Wrap con pollo e verdure</div></div><span class="chev">›</span></div><div class="meal-body"><div class="meal-body-inner"><ul class="ing-list"><li class="ing-item"><span class="ing-qty" contenteditable="false" spellcheck="false">1</span><span contenteditable="false" spellcheck="false">piadina integrale senza strutto</span><button class="ing-del" onclick="delIng(this)">×</button></li><li class="ing-item"><span class="ing-qty" contenteditable="false" spellcheck="false">100 g</span><span contenteditable="false" spellcheck="false">petto di pollo con spezie (paprika o curry)</span><button class="ing-del" onclick="delIng(this)">×</button></li><li class="ing-item"><span class="ing-qty" contenteditable="false" spellcheck="false">—</span><span contenteditable="false" spellcheck="false">insalata e pomodori</span><button class="ing-del" onclick="delIng(this)">×</button></li><li class="ing-item"><span class="ing-qty" contenteditable="false" spellcheck="false">2 cucchiaini</span><span contenteditable="false" spellcheck="false">olio EVO</span><button class="ing-del" onclick="delIng(this)">×</button></li></ul><div class="edit-controls"><button class="ec-btn add" onclick="addIngredient(this)">＋ Ingrediente</button><button class="ec-btn del" onclick="deleteMealCard(this)">🗑 Elimina</button></div><div class="photos-sec" data-meal="g3-cena"><div class="photos-lbl">📸 Foto pasto</div><div class="photos-grid"></div><input type="file" accept="image/*" multiple style="display:none" onchange="handlePhotos('g3-cena',this)"></div></div></div></div>
+  </div>
+  <button class="add-meal-btn" onclick="addMeal('g3')">＋ Aggiungi pasto</button>
+</div>
+
+<!-- ══ G4 ══ -->
+<div class="section" id="g4">
+  <div class="day-hdr" contenteditable="false" spellcheck="false">Giorno 4</div>
+  <div class="day-sub" contenteditable="false" spellcheck="false">Colazione e spuntino insieme</div>
+  <div class="notes-block" id="nb-g4"><div class="notes-hdr" onclick="toggleNotes('g4')"><span class="notes-ico">📝</span><span class="notes-title">Note del giorno</span><span class="notes-badge" id="nbadge-g4">✓</span><span class="chev">›</span></div><div class="notes-body"><div class="notes-inner"><textarea class="notes-ta" id="nta-g4" placeholder="Come ti sei sentita? Modifiche, sensazioni…"></textarea><div class="notes-foot"><button class="notes-save" onclick="saveNote('g4')">Salva</button><span class="saved-msg" id="nsaved-g4">Salvata ✓</span></div></div></div></div>
+  <div id="meals-g4">
+  <div class="meal-card" data-meal="g4-col"><div class="meal-hdr" onclick="toggleMeal(this,event)"><div class="meal-ico ico-c">🥪</div><div class="meal-meta"><div class="meal-name" contenteditable="false" spellcheck="false">Colazione + Spuntino</div><div class="meal-preview" contenteditable="false" spellcheck="false">Toast con fesa di pollo</div></div><span class="chev">›</span></div><div class="meal-body"><div class="meal-body-inner"><ul class="ing-list"><li class="ing-item"><span class="ing-qty" contenteditable="false" spellcheck="false">50 g</span><span contenteditable="false" spellcheck="false">pane tostato (2 fette)</span><button class="ing-del" onclick="delIng(this)">×</button></li><li class="ing-item"><span class="ing-qty" contenteditable="false" spellcheck="false">80 g</span><span contenteditable="false" spellcheck="false">fesa di pollo confezionata</span><button class="ing-del" onclick="delIng(this)">×</button></li><li class="ing-item"><span class="ing-qty" contenteditable="false" spellcheck="false">—</span><span contenteditable="false" spellcheck="false">insalata e pomodori</span><button class="ing-del" onclick="delIng(this)">×</button></li></ul><div class="edit-controls"><button class="ec-btn add" onclick="addIngredient(this)">＋ Ingrediente</button><button class="ec-btn del" onclick="deleteMealCard(this)">🗑 Elimina</button></div><div class="photos-sec" data-meal="g4-col"><div class="photos-lbl">📸 Foto pasto</div><div class="photos-grid"></div><input type="file" accept="image/*" multiple style="display:none" onchange="handlePhotos('g4-col',this)"></div></div></div></div>
+  <div class="meal-card" data-meal="g4-pranzo"><div class="meal-hdr" onclick="toggleMeal(this,event)"><div class="meal-ico ico-p">🍝</div><div class="meal-meta"><div class="meal-name" contenteditable="false" spellcheck="false">Pranzo</div><div class="meal-preview" contenteditable="false" spellcheck="false">Gnocchetti con fiocchi di latte</div></div><span class="chev">›</span></div><div class="meal-body"><div class="meal-body-inner"><ul class="ing-list"><li class="ing-item"><span class="ing-qty" contenteditable="false" spellcheck="false">100 g</span><span contenteditable="false" spellcheck="false">gnocchetti</span><button class="ing-del" onclick="delIng(this)">×</button></li><li class="ing-item"><span class="ing-qty" contenteditable="false" spellcheck="false">½ conf.</span><span contenteditable="false" spellcheck="false">fiocchi di latte proteici</span><button class="ing-del" onclick="delIng(this)">×</button></li><li class="ing-item"><span class="ing-qty" contenteditable="false" spellcheck="false">—</span><span contenteditable="false" spellcheck="false">verdura a piacere o 70 g sugo senza soffritto + basilico</span><button class="ing-del" onclick="delIng(this)">×</button></li><li class="ing-item"><span class="ing-qty" contenteditable="false" spellcheck="false">1 cucchiaino</span><span contenteditable="false" spellcheck="false">olio EVO</span><button class="ing-del" onclick="delIng(this)">×</button></li></ul><div class="edit-controls"><button class="ec-btn add" onclick="addIngredient(this)">＋ Ingrediente</button><button class="ec-btn del" onclick="deleteMealCard(this)">🗑 Elimina</button></div><div class="photos-sec" data-meal="g4-pranzo"><div class="photos-lbl">📸 Foto pasto</div><div class="photos-grid"></div><input type="file" accept="image/*" multiple style="display:none" onchange="handlePhotos('g4-pranzo',this)"></div></div></div></div>
+  <div class="meal-card" data-meal="g4-sp"><div class="meal-hdr" onclick="toggleMeal(this,event)"><div class="meal-ico ico-s">🫙</div><div class="meal-meta"><div class="meal-name" contenteditable="false" spellcheck="false">Spuntino Pomeriggio</div><div class="meal-preview" contenteditable="false" spellcheck="false">Yogurt greco, mirtilli, burro d'arachidi</div></div><span class="chev">›</span></div><div class="meal-body"><div class="meal-body-inner"><ul class="ing-list"><li class="ing-item"><span class="ing-qty" contenteditable="false" spellcheck="false">—</span><span contenteditable="false" spellcheck="false">yogurt greco magro</span><button class="ing-del" onclick="delIng(this)">×</button></li><li class="ing-item"><span class="ing-qty" contenteditable="false" spellcheck="false">50 g</span><span contenteditable="false" spellcheck="false">mirtilli</span><button class="ing-del" onclick="delIng(this)">×</button></li><li class="ing-item"><span class="ing-qty" contenteditable="false" spellcheck="false">1 cucchiaino</span><span contenteditable="false" spellcheck="false">burro d'arachidi 100%</span><button class="ing-del" onclick="delIng(this)">×</button></li></ul><div class="edit-controls"><button class="ec-btn add" onclick="addIngredient(this)">＋ Ingrediente</button><button class="ec-btn del" onclick="deleteMealCard(this)">🗑 Elimina</button></div><div class="photos-sec" data-meal="g4-sp"><div class="photos-lbl">📸 Foto pasto</div><div class="photos-grid"></div><input type="file" accept="image/*" multiple style="display:none" onchange="handlePhotos('g4-sp',this)"></div></div></div></div>
+  <div class="meal-card" data-meal="g4-cena"><div class="meal-hdr" onclick="toggleMeal(this,event)"><div class="meal-ico ico-d">🐟</div><div class="meal-meta"><div class="meal-name" contenteditable="false" spellcheck="false">Cena</div><div class="meal-preview" contenteditable="false" spellcheck="false">Cous cous con tonno e peperoni</div></div><span class="chev">›</span></div><div class="meal-body"><div class="meal-body-inner"><ul class="ing-list"><li class="ing-item"><span class="ing-qty" contenteditable="false" spellcheck="false">60 g</span><span contenteditable="false" spellcheck="false">cous cous</span><button class="ing-del" onclick="delIng(this)">×</button></li><li class="ing-item"><span class="ing-qty" contenteditable="false" spellcheck="false">—</span><span contenteditable="false" spellcheck="false">peperoni o altra verdura a piacere</span><button class="ing-del" onclick="delIng(this)">×</button></li><li class="ing-item"><span class="ing-qty" contenteditable="false" spellcheck="false">120 g</span><span contenteditable="false" spellcheck="false">tonno in scatola al naturale</span><button class="ing-del" onclick="delIng(this)">×</button></li><li class="ing-item"><span class="ing-qty" contenteditable="false" spellcheck="false">1 cucchiaino</span><span contenteditable="false" spellcheck="false">olio EVO</span><button class="ing-del" onclick="delIng(this)">×</button></li></ul><div class="edit-controls"><button class="ec-btn add" onclick="addIngredient(this)">＋ Ingrediente</button><button class="ec-btn del" onclick="deleteMealCard(this)">🗑 Elimina</button></div><div class="photos-sec" data-meal="g4-cena"><div class="photos-lbl">📸 Foto pasto</div><div class="photos-grid"></div><input type="file" accept="image/*" multiple style="display:none" onchange="handlePhotos('g4-cena',this)"></div></div></div></div>
+  </div>
+  <button class="add-meal-btn" onclick="addMeal('g4')">＋ Aggiungi pasto</button>
+</div>
+
+<!-- ══ SABATO ══ -->
+<div class="section" id="sabato">
+  <div class="day-hdr" contenteditable="false" spellcheck="false">Sabato</div>
+  <div class="day-sub" contenteditable="false" spellcheck="false">Con libera uscita a cena 🍕</div>
+  <div class="notes-block" id="nb-sabato"><div class="notes-hdr" onclick="toggleNotes('sabato')"><span class="notes-ico">📝</span><span class="notes-title">Note del giorno</span><span class="notes-badge" id="nbadge-sabato">✓</span><span class="chev">›</span></div><div class="notes-body"><div class="notes-inner"><textarea class="notes-ta" id="nta-sabato" placeholder="Come ti sei sentita? Modifiche, sensazioni…"></textarea><div class="notes-foot"><button class="notes-save" onclick="saveNote('sabato')">Salva</button><span class="saved-msg" id="nsaved-sabato">Salvata ✓</span></div></div></div></div>
+  <div id="meals-sabato">
+  <div class="meal-card" data-meal="sab-col"><div class="meal-hdr" onclick="toggleMeal(this,event)"><div class="meal-ico ico-c">🌿</div><div class="meal-meta"><div class="meal-name" contenteditable="false" spellcheck="false">Colazione + Spuntino</div><div class="meal-preview" contenteditable="false" spellcheck="false">Porridge antinfiammatorio</div></div><span class="chev">›</span></div><div class="meal-body"><div class="meal-body-inner"><ul class="ing-list"><li class="ing-item"><span class="ing-qty" contenteditable="false" spellcheck="false">30 g</span><span contenteditable="false" spellcheck="false">fiocchi d'avena (cuocere con 3 dita d'acqua a fuoco basso)</span><button class="ing-del" onclick="delIng(this)">×</button></li><li class="ing-item"><span class="ing-qty" contenteditable="false" spellcheck="false">1 manciata</span><span contenteditable="false" spellcheck="false">frutti rossi (topping)</span><button class="ing-del" onclick="delIng(this)">×</button></li><li class="ing-item"><span class="ing-qty" contenteditable="false" spellcheck="false">1</span><span contenteditable="false" spellcheck="false">noce (topping)</span><button class="ing-del" onclick="delIng(this)">×</button></li></ul><div class="edit-controls"><button class="ec-btn add" onclick="addIngredient(this)">＋ Ingrediente</button><button class="ec-btn del" onclick="deleteMealCard(this)">🗑 Elimina</button></div><div class="photos-sec" data-meal="sab-col"><div class="photos-lbl">📸 Foto pasto</div><div class="photos-grid"></div><input type="file" accept="image/*" multiple style="display:none" onchange="handlePhotos('sab-col',this)"></div></div></div></div>
+  <div class="meal-card" data-meal="sab-pranzo"><div class="meal-hdr" onclick="toggleMeal(this,event)"><div class="meal-ico ico-p">🦐</div><div class="meal-meta"><div class="meal-name" contenteditable="false" spellcheck="false">Pranzo</div><div class="meal-preview" contenteditable="false" spellcheck="false">Riso basmati con insalata di mare</div></div><span class="chev">›</span></div><div class="meal-body"><div class="meal-body-inner"><ul class="ing-list"><li class="ing-item"><span class="ing-qty" contenteditable="false" spellcheck="false">60 g</span><span contenteditable="false" spellcheck="false">riso basmati</span><button class="ing-del" onclick="delIng(this)">×</button></li><li class="ing-item"><span class="ing-qty" contenteditable="false" spellcheck="false">100 g</span><span contenteditable="false" spellcheck="false">insalata di mare + 1 cucchiaio olio EVO</span><button class="ing-del" onclick="delIng(this)">×</button></li></ul><div class="tip-box" contenteditable="false" spellcheck="false">In alternativa: 100 g gamberetti sgusciati con verdura a piacere.</div><div class="edit-controls"><button class="ec-btn add" onclick="addIngredient(this)">＋ Ingrediente</button><button class="ec-btn del" onclick="deleteMealCard(this)">🗑 Elimina</button></div><div class="photos-sec" data-meal="sab-pranzo"><div class="photos-lbl">📸 Foto pasto</div><div class="photos-grid"></div><input type="file" accept="image/*" multiple style="display:none" onchange="handlePhotos('sab-pranzo',this)"></div></div></div></div>
+  <div class="meal-card" data-meal="sab-sp"><div class="meal-hdr" onclick="toggleMeal(this,event)"><div class="meal-ico ico-s">🫙</div><div class="meal-meta"><div class="meal-name" contenteditable="false" spellcheck="false">Spuntino Pomeriggio</div><div class="meal-preview" contenteditable="false" spellcheck="false">Yogurt greco, noci, marmellata</div></div><span class="chev">›</span></div><div class="meal-body"><div class="meal-body-inner"><ul class="ing-list"><li class="ing-item"><span class="ing-qty" contenteditable="false" spellcheck="false">1</span><span contenteditable="false" spellcheck="false">yogurt greco magro</span><button class="ing-del" onclick="delIng(this)">×</button></li><li class="ing-item"><span class="ing-qty" contenteditable="false" spellcheck="false">2</span><span contenteditable="false" spellcheck="false">noci</span><button class="ing-del" onclick="delIng(this)">×</button></li><li class="ing-item"><span class="ing-qty" contenteditable="false" spellcheck="false">2 cucchiaini</span><span contenteditable="false" spellcheck="false">marmellata Hero Light</span><button class="ing-del" onclick="delIng(this)">×</button></li></ul><div class="edit-controls"><button class="ec-btn add" onclick="addIngredient(this)">＋ Ingrediente</button><button class="ec-btn del" onclick="deleteMealCard(this)">🗑 Elimina</button></div><div class="photos-sec" data-meal="sab-sp"><div class="photos-lbl">📸 Foto pasto</div><div class="photos-grid"></div><input type="file" accept="image/*" multiple style="display:none" onchange="handlePhotos('sab-sp',this)"></div></div></div></div>
+  <div class="meal-card" data-meal="sab-cena"><div class="meal-hdr" onclick="toggleMeal(this,event)"><div class="meal-ico ico-d">🍕</div><div class="meal-meta"><div class="meal-name" contenteditable="false" spellcheck="false">Cena</div><div class="meal-preview" contenteditable="false" spellcheck="false">Pizza! 🎉</div></div><span class="chev">›</span></div><div class="meal-body"><div class="meal-body-inner"><ul class="ing-list"><li class="ing-item"><span class="ing-qty" contenteditable="false" spellcheck="false">—</span><span contenteditable="false" spellcheck="false">pizza margherita / prosciutto e funghi</span><button class="ing-del" onclick="delIng(this)">×</button></li><li class="ing-item"><span class="ing-qty" contenteditable="false" spellcheck="false">1</span><span contenteditable="false" spellcheck="false">Coca Zero oppure 1 bicchiere di vino</span><button class="ing-del" onclick="delIng(this)">×</button></li><li class="ing-item"><span class="ing-qty" contenteditable="false" spellcheck="false">—</span><span contenteditable="false" spellcheck="false">verdure grigliate come antipasto (facoltativo)</span><button class="ing-del" onclick="delIng(this)">×</button></li></ul><div class="tip-box" contenteditable="false" spellcheck="false">Evitare fritture, superalcolici e bevande gassate.</div><div class="edit-controls"><button class="ec-btn add" onclick="addIngredient(this)">＋ Ingrediente</button><button class="ec-btn del" onclick="deleteMealCard(this)">🗑 Elimina</button></div><div class="photos-sec" data-meal="sab-cena"><div class="photos-lbl">📸 Foto pasto</div><div class="photos-grid"></div><input type="file" accept="image/*" multiple style="display:none" onchange="handlePhotos('sab-cena',this)"></div></div></div></div>
+  </div>
+  <button class="add-meal-btn" onclick="addMeal('sabato')">＋ Aggiungi pasto</button>
+</div>
+
+<!-- ══ DOMENICA ══ -->
+<div class="section" id="domenica">
+  <div class="day-hdr" contenteditable="false" spellcheck="false">Domenica</div>
+  <div class="day-sub" contenteditable="false" spellcheck="false">Giorno libero con cura 🌿</div>
+  <div class="notes-block" id="nb-domenica"><div class="notes-hdr" onclick="toggleNotes('domenica')"><span class="notes-ico">📝</span><span class="notes-title">Note del giorno</span><span class="notes-badge" id="nbadge-domenica">✓</span><span class="chev">›</span></div><div class="notes-body"><div class="notes-inner"><textarea class="notes-ta" id="nta-domenica" placeholder="Come ti sei sentita? Modifiche, sensazioni…"></textarea><div class="notes-foot"><button class="notes-save" onclick="saveNote('domenica')">Salva</button><span class="saved-msg" id="nsaved-domenica">Salvata ✓</span></div></div></div></div>
+  <div id="meals-domenica">
+  <div class="meal-card" data-meal="dom-col"><div class="meal-hdr" onclick="toggleMeal(this,event)"><div class="meal-ico ico-c">🍓</div><div class="meal-meta"><div class="meal-name" contenteditable="false" spellcheck="false">Colazione / Spuntino</div><div class="meal-preview" contenteditable="false" spellcheck="false">Frutta fresca e mandorle</div></div><span class="chev">›</span></div><div class="meal-body"><div class="meal-body-inner"><ul class="ing-list"><li class="ing-item"><span class="ing-qty" contenteditable="false" spellcheck="false">150 g</span><span contenteditable="false" spellcheck="false">frutta fresca</span><button class="ing-del" onclick="delIng(this)">×</button></li><li class="ing-item"><span class="ing-qty" contenteditable="false" spellcheck="false">8</span><span contenteditable="false" spellcheck="false">mandorle</span><button class="ing-del" onclick="delIng(this)">×</button></li></ul><div class="edit-controls"><button class="ec-btn add" onclick="addIngredient(this)">＋ Ingrediente</button><button class="ec-btn del" onclick="deleteMealCard(this)">🗑 Elimina</button></div><div class="photos-sec" data-meal="dom-col"><div class="photos-lbl">📸 Foto pasto</div><div class="photos-grid"></div><input type="file" accept="image/*" multiple style="display:none" onchange="handlePhotos('dom-col',this)"></div></div></div></div>
+  <div class="meal-card" data-meal="dom-pranzo"><div class="meal-hdr" onclick="toggleMeal(this,event)"><div class="meal-ico ico-p">🍽️</div><div class="meal-meta"><div class="meal-name" contenteditable="false" spellcheck="false">Pranzo</div><div class="meal-preview" contenteditable="false" spellcheck="false">Primo a scelta + secondo magro</div></div><span class="chev">›</span></div><div class="meal-body"><div class="meal-body-inner"><ul class="ing-list"><li class="ing-item"><span class="ing-qty" contenteditable="false" spellcheck="false">—</span><span contenteditable="false" spellcheck="false">primo a scelta con secondo a base di carne o pesce magro</span><button class="ing-del" onclick="delIng(this)">×</button></li><li class="ing-item"><span class="ing-qty" contenteditable="false" spellcheck="false">—</span><span contenteditable="false" spellcheck="false">verdura cruda e cotta a piacere come contorno</span><button class="ing-del" onclick="delIng(this)">×</button></li><li class="ing-item"><span class="ing-qty" contenteditable="false" spellcheck="false">—</span><span contenteditable="false" spellcheck="false">gelato coppetta piccola (concesso ✓)</span><button class="ing-del" onclick="delIng(this)">×</button></li></ul><div class="tip-box" contenteditable="false" spellcheck="false">Evitare pasti abbondanti, fritture e bevande gassate.</div><div class="edit-controls"><button class="ec-btn add" onclick="addIngredient(this)">＋ Ingrediente</button><button class="ec-btn del" onclick="deleteMealCard(this)">🗑 Elimina</button></div><div class="photos-sec" data-meal="dom-pranzo"><div class="photos-lbl">📸 Foto pasto</div><div class="photos-grid"></div><input type="file" accept="image/*" multiple style="display:none" onchange="handlePhotos('dom-pranzo',this)"></div></div></div></div>
+  <div class="meal-card" data-meal="dom-cena"><div class="meal-hdr" onclick="toggleMeal(this,event)"><div class="meal-ico ico-d">🥗</div><div class="meal-meta"><div class="meal-name" contenteditable="false" spellcheck="false">Cena</div><div class="meal-preview" contenteditable="false" spellcheck="false">Insalatona detox al tonno</div></div><span class="chev">›</span></div><div class="meal-body"><div class="meal-body-inner"><ul class="ing-list"><li class="ing-item"><span class="ing-qty" contenteditable="false" spellcheck="false">2 scatolette</span><span contenteditable="false" spellcheck="false">tonno al naturale (piccole)</span><button class="ing-del" onclick="delIng(this)">×</button></li><li class="ing-item"><span class="ing-qty" contenteditable="false" spellcheck="false">—</span><span contenteditable="false" spellcheck="false">insalata + 1 cucchiaino olio EVO</span><button class="ing-del" onclick="delIng(this)">×</button></li><li class="ing-item"><span class="ing-qty" contenteditable="false" spellcheck="false">—</span><span contenteditable="false" spellcheck="false">verdure crude e cotte a piacere</span><button class="ing-del" onclick="delIng(this)">×</button></li></ul><div class="edit-controls"><button class="ec-btn add" onclick="addIngredient(this)">＋ Ingrediente</button><button class="ec-btn del" onclick="deleteMealCard(this)">🗑 Elimina</button></div><div class="photos-sec" data-meal="dom-cena"><div class="photos-lbl">📸 Foto pasto</div><div class="photos-grid"></div><input type="file" accept="image/*" multiple style="display:none" onchange="handlePhotos('dom-cena',this)"></div></div></div></div>
+  </div>
+  <button class="add-meal-btn" onclick="addMeal('domenica')">＋ Aggiungi pasto</button>
+</div>
+
+<!-- ══ CONSIGLI ══ -->
+<div class="section" id="sec-consigli">
+  <div class="sect-lbl" contenteditable="false" spellcheck="false">Consigli</div>
+  <div class="sect-sub" contenteditable="false" spellcheck="false">Indicazioni nutrizionali</div>
+  <div class="adv-card"><div class="adv-hdr" onclick="toggleAdv(this)"><div class="adv-ico" style="background:#E8F5E9">🫒</div><div class="adv-title" contenteditable="false" spellcheck="false">Condimenti</div><button class="adv-del" onclick="delAdv(event,this)">🗑</button><span class="chev">›</span></div><div class="adv-body"><div class="adv-inner"><div class="adv-text" contenteditable="false" spellcheck="false">Utilizzare olio extravergine d'oliva (1 cucchiaio a pranzo + 1 a cena), succo di limone, aceto di mele, erbe aromatiche (basilico, rosmarino, salvia, menta) e spezie (curcuma, zenzero, cumino, cannella, curry). Limitare il sale.</div></div></div></div>
+  <div class="adv-card"><div class="adv-hdr" onclick="toggleAdv(this)"><div class="adv-ico" style="background:#FFF8E1">🍬</div><div class="adv-title" contenteditable="false" spellcheck="false">Zucchero e dolcificanti</div><button class="adv-del" onclick="delAdv(event,this)">🗑</button><span class="chev">›</span></div><div class="adv-body"><div class="adv-inner"><div class="adv-text" contenteditable="false" spellcheck="false">Limitare lo zucchero. No marmellate zuccherate. Preferire Stevia 100 o Truvia (Eridania), Zero, Dietor senza aspartame, Dietor Stevia.</div></div></div></div>
+  <div class="adv-card"><div class="adv-hdr" onclick="toggleAdv(this)"><div class="adv-ico" style="background:#E3F2FD">🍳</div><div class="adv-title" contenteditable="false" spellcheck="false">Metodi di cottura</div><button class="adv-del" onclick="delAdv(event,this)">🗑</button><span class="chev">›</span></div><div class="adv-body"><div class="adv-inner"><div class="adv-text" contenteditable="false" spellcheck="false">Non sono ammessi fritti e soffritti. Prediligere cottura al vapore, al forno, in padella antiaderente con acqua e olio a crudo.</div></div></div></div>
+  <div class="adv-card"><div class="adv-hdr" onclick="toggleAdv(this)"><div class="adv-ico" style="background:#E1F5FE">💧</div><div class="adv-title" contenteditable="false" spellcheck="false">Bevande</div><button class="adv-del" onclick="delAdv(event,this)">🗑</button><span class="chev">›</span></div><div class="adv-body"><div class="adv-inner"><div class="adv-text" contenteditable="false" spellcheck="false">Bere almeno 1,5 L di acqua al giorno. Tisane drenanti e sgonfianti durante il giorno. Evitare bevande gassate, succhi, bevande zuccherate, alcool (eccetto 1 bicchiere sabato sera), tè in bottiglia, birra.</div></div></div></div>
+  <div class="adv-card"><div class="adv-hdr" onclick="toggleAdv(this)"><div class="adv-ico" style="background:#F1F8E9">🥦</div><div class="adv-title" contenteditable="false" spellcheck="false">Frutta e verdura</div><button class="adv-del" onclick="delAdv(event,this)">🗑</button><span class="chev">›</span></div><div class="adv-body"><div class="adv-inner"><div class="adv-text" contenteditable="false" spellcheck="false">Tutti gli ortaggi e le verdure sono sostituibili! Evitare in questa prima fase: banane, castagne, uva, fichi, cachi, mais, carote cotte, patate come contorno.</div></div></div></div>
+  <div class="adv-card"><div class="adv-hdr" onclick="toggleAdv(this)"><div class="adv-ico" style="background:#FCE4EC">🥩</div><div class="adv-title" contenteditable="false" spellcheck="false">Salumi e formaggi</div><button class="adv-del" onclick="delAdv(event,this)">🗑</button><span class="chev">›</span></div><div class="adv-body"><div class="adv-inner"><div class="adv-text" contenteditable="false" spellcheck="false">Evitare: mortadella, salame, salsiccia, würstel, coppa, prosciutto. Preferire: fesa di tacchino/pollo, bresaola magra. Formaggi: primo sale, ricotta, fiocchi di latte, formaggio spalmabile max 5% grassi.</div></div></div></div>
+  <div class="adv-card"><div class="adv-hdr" onclick="toggleAdv(this)"><div class="adv-ico" style="background:#E0F7FA">🐟</div><div class="adv-title" contenteditable="false" spellcheck="false">Pesce consigliato</div><button class="adv-del" onclick="delAdv(event,this)">🗑</button><span class="chev">›</span></div><div class="adv-body"><div class="adv-inner"><div class="adv-text" contenteditable="false" spellcheck="false">Pesce azzurro pescato di piccola taglia, merluzzo, sogliola, pescatrice, rombo, sarago, calamari, totani, polpo, seppie, gamberetti, cozze, vongole, frutti di mare, salmone, pesce spada, tonno, carpaccio di pesce. Evitare pesci d'allevamento. Va bene pesce surgelato o in scatola al naturale.</div></div></div></div>
+  <div class="adv-card"><div class="adv-hdr" onclick="toggleAdv(this)"><div class="adv-ico" style="background:#FFF3E0">⚠️</div><div class="adv-title" contenteditable="false" spellcheck="false">Alimenti da evitare</div><button class="adv-del" onclick="delAdv(event,this)">🗑</button><span class="chev">›</span></div><div class="adv-body"><div class="adv-inner"><div class="adv-text" contenteditable="false" spellcheck="false">Burro, strutto, margarina, panna, maionese, ketchup. Fritture. Merendine, crackers, pan carré, biscotti, grissini, salatini, patatine. Dolci, caramelle. Succhi, tè in bottiglia, birra, alcolici, bevande gassate.</div></div></div></div>
+  <div class="adv-card"><div class="adv-hdr" onclick="toggleAdv(this)"><div class="adv-ico" style="background:#EDE7F6">🧘</div><div class="adv-title" contenteditable="false" spellcheck="false">Buone norme</div><button class="adv-del" onclick="delAdv(event,this)">🗑</button><span class="chev">›</span></div><div class="adv-body"><div class="adv-inner"><div class="adv-text" contenteditable="false" spellcheck="false">Evitare pasti abbondanti, preferire pasti piccoli e frequenti. Assumere i pasti ad orari regolari. Mangiare seduti a tavola, non in piedi. Masticare lentamente. Dare il giusto tempo al cibo.</div></div></div></div>
+  <button class="add-adv-btn" onclick="addAdvice()">＋ Aggiungi consiglio</button>
+</div>
+
+<!-- ══ CHECKLIST ══ -->
+<div class="section" id="sec-checklist">
+  <div class="cl-hdr" contenteditable="false" spellcheck="false">Lista della spesa</div>
+  <div class="cl-sub" contenteditable="false" spellcheck="false">Segna cosa hai già</div>
+  <div class="spesa-photo-wrap">
+    <div class="spesa-photo-title">📸 Foto lista / ricevute</div>
+    <div class="spesa-photos-grid" id="spesa-grid"></div>
+    <input type="file" id="spesa-input" accept="image/*" multiple style="display:none" onchange="handlePhotos('spesa',this)">
+  </div>
+  <div class="prog-wrap">
+    <div class="prog-row"><span>Completato</span><span id="progText">0 / 0</span></div>
+    <div class="prog-bar"><div class="prog-fill" id="progFill" style="width:0%"></div></div>
+    <div class="cl-actions">
+      <button class="cl-act-btn" onclick="resetChecklist()">↺ Azzera</button>
+      <button class="cl-act-btn" onclick="checkAll()">✓ Tutti</button>
+    </div>
+  </div>
+  <div id="clContainer">
+  <div class="check-group"><div class="cg-title-row"><span class="cg-title" contenteditable="false" spellcheck="false">🌾 Carboidrati &amp; Cereali</span><button class="cg-del" onclick="delGroup(this)">🗑</button></div>
+    <div class="check-item" onclick="toggleCheck(this,event)"><div class="check-box"></div><div class="check-label" contenteditable="false" spellcheck="false">Pane integrale</div><button class="ci-del" onclick="delItem(event,this)">×</button></div>
+    <div class="check-item" onclick="toggleCheck(this,event)"><div class="check-box"></div><div class="check-label" contenteditable="false" spellcheck="false">Pasta (varie formati)</div><button class="ci-del" onclick="delItem(event,this)">×</button></div>
+    <div class="check-item" onclick="toggleCheck(this,event)"><div class="check-box"></div><div class="check-label" contenteditable="false" spellcheck="false">Riso basmati</div><button class="ci-del" onclick="delItem(event,this)">×</button></div>
+    <div class="check-item" onclick="toggleCheck(this,event)"><div class="check-box"></div><div class="check-label" contenteditable="false" spellcheck="false">Gnocchetti</div><button class="ci-del" onclick="delItem(event,this)">×</button></div>
+    <div class="check-item" onclick="toggleCheck(this,event)"><div class="check-box"></div><div class="check-label" contenteditable="false" spellcheck="false">Cous cous</div><button class="ci-del" onclick="delItem(event,this)">×</button></div>
+    <div class="check-item" onclick="toggleCheck(this,event)"><div class="check-box"></div><div class="check-label" contenteditable="false" spellcheck="false">Farina d'avena</div><button class="ci-del" onclick="delItem(event,this)">×</button></div>
+    <div class="check-item" onclick="toggleCheck(this,event)"><div class="check-box"></div><div class="check-label" contenteditable="false" spellcheck="false">Fiocchi d'avena</div><button class="ci-del" onclick="delItem(event,this)">×</button></div>
+    <div class="check-item" onclick="toggleCheck(this,event)"><div class="check-box"></div><div class="check-label" contenteditable="false" spellcheck="false">Cereali Misura extrafondente o frutti rossi</div><button class="ci-del" onclick="delItem(event,this)">×</button></div>
+    <div class="check-item" onclick="toggleCheck(this,event)"><div class="check-box"></div><div class="check-label" contenteditable="false" spellcheck="false">Piadina integrale senza strutto</div><button class="ci-del" onclick="delItem(event,this)">×</button></div>
+    <button class="add-ci-btn" onclick="addCheckItem(this)">＋ Aggiungi elemento</button>
+  </div>
+  <div class="check-group"><div class="cg-title-row"><span class="cg-title" contenteditable="false" spellcheck="false">🥩 Proteine</span><button class="cg-del" onclick="delGroup(this)">🗑</button></div>
+    <div class="check-item" onclick="toggleCheck(this,event)"><div class="check-box"></div><div class="check-label" contenteditable="false" spellcheck="false">Yogurt greco magro</div><button class="ci-del" onclick="delItem(event,this)">×</button></div>
+    <div class="check-item" onclick="toggleCheck(this,event)"><div class="check-box"></div><div class="check-label" contenteditable="false" spellcheck="false">Fiocchi di latte proteici</div><button class="ci-del" onclick="delItem(event,this)">×</button></div>
+    <div class="check-item" onclick="toggleCheck(this,event)"><div class="check-box"></div><div class="check-label" contenteditable="false" spellcheck="false">Uova</div><button class="ci-del" onclick="delItem(event,this)">×</button></div>
+    <div class="check-item" onclick="toggleCheck(this,event)"><div class="check-box"></div><div class="check-label" contenteditable="false" spellcheck="false">Petto di pollo</div><button class="ci-del" onclick="delItem(event,this)">×</button></div>
+    <div class="check-item" onclick="toggleCheck(this,event)"><div class="check-box"></div><div class="check-label" contenteditable="false" spellcheck="false">Fesa di pollo confezionata</div><button class="ci-del" onclick="delItem(event,this)">×</button></div>
+    <div class="check-item" onclick="toggleCheck(this,event)"><div class="check-box"></div><div class="check-label" contenteditable="false" spellcheck="false">Macinato di vitello magro</div><button class="ci-del" onclick="delItem(event,this)">×</button></div>
+    <div class="check-item" onclick="toggleCheck(this,event)"><div class="check-box"></div><div class="check-label" contenteditable="false" spellcheck="false">Merluzzo</div><button class="ci-del" onclick="delItem(event,this)">×</button></div>
+    <div class="check-item" onclick="toggleCheck(this,event)"><div class="check-box"></div><div class="check-label" contenteditable="false" spellcheck="false">Tonno in scatola al naturale</div><button class="ci-del" onclick="delItem(event,this)">×</button></div>
+    <div class="check-item" onclick="toggleCheck(this,event)"><div class="check-box"></div><div class="check-label" contenteditable="false" spellcheck="false">Insalata di mare / gamberetti</div><button class="ci-del" onclick="delItem(event,this)">×</button></div>
+    <div class="check-item" onclick="toggleCheck(this,event)"><div class="check-box"></div><div class="check-label" contenteditable="false" spellcheck="false">Budino proteico My Protein</div><button class="ci-del" onclick="delItem(event,this)">×</button></div>
+    <div class="check-item" onclick="toggleCheck(this,event)"><div class="check-box"></div><div class="check-label" contenteditable="false" spellcheck="false">Latte parz. scremato</div><button class="ci-del" onclick="delItem(event,this)">×</button></div>
+    <button class="add-ci-btn" onclick="addCheckItem(this)">＋ Aggiungi elemento</button>
+  </div>
+  <div class="check-group"><div class="cg-title-row"><span class="cg-title" contenteditable="false" spellcheck="false">🥦 Frutta &amp; Verdura</span><button class="cg-del" onclick="delGroup(this)">🗑</button></div>
+    <div class="check-item" onclick="toggleCheck(this,event)"><div class="check-box"></div><div class="check-label" contenteditable="false" spellcheck="false">Mirtilli</div><button class="ci-del" onclick="delItem(event,this)">×</button></div>
+    <div class="check-item" onclick="toggleCheck(this,event)"><div class="check-box"></div><div class="check-label" contenteditable="false" spellcheck="false">Mela</div><button class="ci-del" onclick="delItem(event,this)">×</button></div>
+    <div class="check-item" onclick="toggleCheck(this,event)"><div class="check-box"></div><div class="check-label" contenteditable="false" spellcheck="false">Kiwi</div><button class="ci-del" onclick="delItem(event,this)">×</button></div>
+    <div class="check-item" onclick="toggleCheck(this,event)"><div class="check-box"></div><div class="check-label" contenteditable="false" spellcheck="false">Banana (½ per i pancake)</div><button class="ci-del" onclick="delItem(event,this)">×</button></div>
+    <div class="check-item" onclick="toggleCheck(this,event)"><div class="check-box"></div><div class="check-label" contenteditable="false" spellcheck="false">Frutti rossi</div><button class="ci-del" onclick="delItem(event,this)">×</button></div>
+    <div class="check-item" onclick="toggleCheck(this,event)"><div class="check-box"></div><div class="check-label" contenteditable="false" spellcheck="false">Avocado</div><button class="ci-del" onclick="delItem(event,this)">×</button></div>
+    <div class="check-item" onclick="toggleCheck(this,event)"><div class="check-box"></div><div class="check-label" contenteditable="false" spellcheck="false">Spinaci</div><button class="ci-del" onclick="delItem(event,this)">×</button></div>
+    <div class="check-item" onclick="toggleCheck(this,event)"><div class="check-box"></div><div class="check-label" contenteditable="false" spellcheck="false">Fagiolini</div><button class="ci-del" onclick="delItem(event,this)">×</button></div>
+    <div class="check-item" onclick="toggleCheck(this,event)"><div class="check-box"></div><div class="check-label" contenteditable="false" spellcheck="false">Patate</div><button class="ci-del" onclick="delItem(event,this)">×</button></div>
+    <div class="check-item" onclick="toggleCheck(this,event)"><div class="check-box"></div><div class="check-label" contenteditable="false" spellcheck="false">Peperoni</div><button class="ci-del" onclick="delItem(event,this)">×</button></div>
+    <div class="check-item" onclick="toggleCheck(this,event)"><div class="check-box"></div><div class="check-label" contenteditable="false" spellcheck="false">Carote e sedano</div><button class="ci-del" onclick="delItem(event,this)">×</button></div>
+    <div class="check-item" onclick="toggleCheck(this,event)"><div class="check-box"></div><div class="check-label" contenteditable="false" spellcheck="false">Pomodori e insalata</div><button class="ci-del" onclick="delItem(event,this)">×</button></div>
+    <div class="check-item" onclick="toggleCheck(this,event)"><div class="check-box"></div><div class="check-label" contenteditable="false" spellcheck="false">Bietole</div><button class="ci-del" onclick="delItem(event,this)">×</button></div>
+    <button class="add-ci-btn" onclick="addCheckItem(this)">＋ Aggiungi elemento</button>
+  </div>
+  <div class="check-group"><div class="cg-title-row"><span class="cg-title" contenteditable="false" spellcheck="false">🫙 Dispensa</span><button class="cg-del" onclick="delGroup(this)">🗑</button></div>
+    <div class="check-item" onclick="toggleCheck(this,event)"><div class="check-box"></div><div class="check-label" contenteditable="false" spellcheck="false">Lenticchie (secche o in scatola)</div><button class="ci-del" onclick="delItem(event,this)">×</button></div>
+    <div class="check-item" onclick="toggleCheck(this,event)"><div class="check-box"></div><div class="check-label" contenteditable="false" spellcheck="false">Sugo senza soffritto</div><button class="ci-del" onclick="delItem(event,this)">×</button></div>
+    <div class="check-item" onclick="toggleCheck(this,event)"><div class="check-box"></div><div class="check-label" contenteditable="false" spellcheck="false">Olio EVO</div><button class="ci-del" onclick="delItem(event,this)">×</button></div>
+    <div class="check-item" onclick="toggleCheck(this,event)"><div class="check-box"></div><div class="check-label" contenteditable="false" spellcheck="false">Burro d'arachidi 100%</div><button class="ci-del" onclick="delItem(event,this)">×</button></div>
+    <div class="check-item" onclick="toggleCheck(this,event)"><div class="check-box"></div><div class="check-label" contenteditable="false" spellcheck="false">Cioccolato fondente</div><button class="ci-del" onclick="delItem(event,this)">×</button></div>
+    <div class="check-item" onclick="toggleCheck(this,event)"><div class="check-box"></div><div class="check-label" contenteditable="false" spellcheck="false">Cacao amaro</div><button class="ci-del" onclick="delItem(event,this)">×</button></div>
+    <div class="check-item" onclick="toggleCheck(this,event)"><div class="check-box"></div><div class="check-label" contenteditable="false" spellcheck="false">Marmellata Hero Light</div><button class="ci-del" onclick="delItem(event,this)">×</button></div>
+    <div class="check-item" onclick="toggleCheck(this,event)"><div class="check-box"></div><div class="check-label" contenteditable="false" spellcheck="false">Barretta Misura Eurospin (senza zuccheri)</div><button class="ci-del" onclick="delItem(event,this)">×</button></div>
+    <div class="check-item" onclick="toggleCheck(this,event)"><div class="check-box"></div><div class="check-label" contenteditable="false" spellcheck="false">Spezie (paprika, curry, curcuma, cannella…)</div><button class="ci-del" onclick="delItem(event,this)">×</button></div>
+    <div class="check-item" onclick="toggleCheck(this,event)"><div class="check-box"></div><div class="check-label" contenteditable="false" spellcheck="false">Stevia / Truvia / dolcificante senza aspartame</div><button class="ci-del" onclick="delItem(event,this)">×</button></div>
+    <button class="add-ci-btn" onclick="addCheckItem(this)">＋ Aggiungi elemento</button>
+  </div>
+  </div>
+  <button class="add-cg-btn" onclick="addGroup()">＋ Aggiungi categoria</button>
+</div>
+
+<!-- ══ STATS ══ -->
+<div class="section" id="sec-stats">
+  <div class="stats-hdr">Statistiche</div>
+  <div class="stats-sub">Aggiornate in tempo reale</div>
+  <div class="big-timer">
+    <div class="bt-label">Dieta in corso da</div>
+    <div class="bt-val" id="btDays">—</div>
+    <div class="bt-sub" id="btSub">Imposta la data di inizio</div>
+    <div class="bt-row">
+      <input type="date" class="start-date-input" id="startInput" oninput="setStart(this.value)">
+      <button class="bt-set-btn" onclick="setStart(document.getElementById('startInput').value)">Imposta</button>
+    </div>
+  </div>
+  <div class="stats-grid">
+    <div class="stat-card"><div class="sc-icon">📝</div><div class="sc-val" id="stNotes">0</div><div class="sc-lbl">Note scritte</div></div>
+    <div class="stat-card"><div class="sc-icon">📸</div><div class="sc-val" id="stPhotos">0</div><div class="sc-lbl">Foto caricate</div></div>
+    <div class="stat-card"><div class="sc-icon">🛒</div><div class="sc-val" id="stCheck">0%</div><div class="sc-lbl">Spesa completata</div></div>
+    <div class="stat-card"><div class="sc-icon">🍽️</div><div class="sc-val" id="stMeals">0</div><div class="sc-lbl">Pasti nel piano</div></div>
+    <div class="stat-card wide"><div class="sc-icon">🔥</div><div class="sc-val" id="stStreak">0 / 6</div><div class="sc-lbl">Giorni con nota salvata</div>
+      <div class="streak-bar" id="streakBar"></div>
+    </div>
+  </div>
+</div>
+
+</div><!-- /main -->
+
+<!-- LIGHTBOX -->
+<div class="lightbox" id="lightbox">
+  <img class="lb-img" id="lbImg" src="" alt="">
+  <div class="lb-actions">
+    <button class="lb-btn lb-close" onclick="closeLb()">✕ Chiudi</button>
+    <button class="lb-btn lb-del" onclick="deleteLbPhoto()">🗑 Elimina</button>
+  </div>
+</div>
+
+<!-- MODAL -->
+<div class="modal-overlay" id="modalOv">
+  <div class="modal">
+    <div class="modal-title" id="modalTitle">Aggiungi</div>
+    <div id="modalBody"></div>
+    <div class="modal-actions">
+      <button class="modal-btn secondary" onclick="closeModal()">Annulla</button>
+      <button class="modal-btn primary" onclick="modalOk()">Conferma</button>
+    </div>
+  </div>
+</div>
+
+<!-- BOTTOM NAV -->
+<div class="bottom-nav">
+  <button class="nav-btn active" id="nav-piano" onclick="showNav('piano')"><span class="ni">📅</span>Piano</button>
+  <button class="nav-btn" id="nav-consigli" onclick="showNav('consigli')"><span class="ni">💡</span>Consigli</button>
+  <button class="nav-btn" id="nav-spesa" onclick="showNav('spesa')"><span class="ni">🛒</span>Spesa</button>
+  <button class="nav-btn" id="nav-stats" onclick="showNav('stats')"><span class="ni">📊</span>Stats</button>
+</div>
+
+<script>
+const DAYS=['g1','g2','g3','g4','sabato','domenica'];
+let currentNav='piano', currentDay='g1', editMode=false;
+let _lbMealId=null, _lbIdx=null, _modalCb=null;
+
+// ── EDIT MODE ──
+// Defined below in the persistence section (needs saveAllEdits)
+
+function applyEditMode(){
+  try{
+    const sel='.meal-name,.meal-preview,.ing-qty,.day-hdr,.day-sub,'+
+      '.adv-title,.adv-text,.tip-box,.check-label,.cg-title,'+
+      '.hdr-label,.sect-lbl,.sect-sub,.cl-hdr,.cl-sub,.notes-title,.stats-hdr,.stats-sub';
+    document.querySelectorAll(sel).forEach(el=>{
+      el.contentEditable=editMode?'true':'false';
+      el.spellcheck=false;
+    });
+    // pill bold values (b tag inside .pill)
+    document.querySelectorAll('.pill b').forEach(el=>{
+      el.contentEditable=editMode?'true':'false';
+      el.spellcheck=false;
+    });
+    // ingredient text spans
+    document.querySelectorAll('.ing-item > span:last-of-type').forEach(el=>{
+      el.contentEditable=editMode?'true':'false';
+      el.spellcheck=false;
+    });
+    // header name
+    document.querySelectorAll('.hdr-name span,.hdr-name em').forEach(el=>{
+      el.contentEditable=editMode?'true':'false';
+      el.spellcheck=false;
+    });
+    // any remaining [contenteditable] in DOM (skip form elements)
+    document.querySelectorAll('[contenteditable]').forEach(el=>{
+      if(el.tagName==='TEXTAREA'||el.tagName==='INPUT') return;
+      el.contentEditable=editMode?'true':'false';
+    });
+  }catch(err){ console.warn('applyEditMode:',err); }
+}
+
+// Observe DOM changes so newly added elements get edit mode applied
+// (paused during restore to avoid cascade)
+let _observerPaused=false;
+const _editObserver=new MutationObserver(()=>{
+  if(editMode && !_observerPaused) applyEditMode();
+});
+_editObserver.observe(document.body,{childList:true,subtree:true});
+
+// ── NAV ──
+function showNav(nav){
+  currentNav=nav;
+  document.querySelectorAll('.nav-btn').forEach(b=>b.classList.remove('active'));
+  document.getElementById('nav-'+nav).classList.add('active');
+  document.querySelectorAll('.section').forEach(s=>s.classList.remove('active'));
+  const tb=document.getElementById('tabBar');
+  if(nav==='piano'){
+    tb.style.display='flex';
+    document.getElementById(currentDay).classList.add('active');
+  } else {
+    tb.style.display='none';
+    if(nav==='consigli') document.getElementById('sec-consigli').classList.add('active');
+    else if(nav==='spesa'){document.getElementById('sec-checklist').classList.add('active');renderSpesaPhotos();updateProgress();}
+    else if(nav==='stats'){document.getElementById('sec-stats').classList.add('active');updateStats();}
+  }
+}
+
+// ── TABS ──
+document.getElementById('tabBar').addEventListener('click',function(e){
+  const btn=e.target.closest('.tab-btn');
+  if(!btn)return;
+  document.querySelectorAll('.tab-btn').forEach(b=>b.classList.remove('active'));
+  btn.classList.add('active');
+  currentDay=btn.dataset.tab;
+  DAYS.forEach(d=>document.getElementById(d).classList.toggle('active',d===currentDay));
+});
+
+// ── MEALS ──
+function toggleMeal(hdr,ev){
+  const card=hdr.closest('.meal-card');
+  // In edit mode, don't toggle if tapping an editable text element
+  if(editMode && ev && ev.target && ev.target.contentEditable==='true') return;
+  card.classList.toggle('open');
+  if(card.classList.contains('open')){
+    const ps=card.querySelector('.photos-sec');
+    if(ps) renderMealPhotos(ps.dataset.meal);
+  }
+}
+
+function addMeal(dayId){
+  openModal('Nuovo pasto',
+    '<label class="modal-label">Nome pasto</label><input class="modal-input" id="mn" placeholder="es. Merenda">'+
+    '<label class="modal-label">Icona emoji</label><input class="modal-input" id="mi" value="🍽️" maxlength="4">',
+    ()=>{
+      const name=document.getElementById('mn').value.trim()||'Nuovo pasto';
+      const icon=document.getElementById('mi').value.trim()||'🍽️';
+      const mid=dayId+'-x'+Date.now();
+      const card=document.createElement('div');
+      card.className='meal-card'; card.dataset.meal=mid;
+      card.innerHTML=`<div class="meal-hdr" onclick="toggleMeal(this,event)"><div class="meal-ico ico-s">${icon}</div><div class="meal-meta"><div class="meal-name" contenteditable="${editMode}" spellcheck="false">${name}</div><div class="meal-preview" contenteditable="${editMode}" spellcheck="false">Tocca per modificare</div></div><span class="chev">›</span></div><div class="meal-body"><div class="meal-body-inner"><ul class="ing-list"><li class="ing-item"><span class="ing-qty" contenteditable="${editMode}" spellcheck="false">—</span><span contenteditable="${editMode}" spellcheck="false">Ingrediente</span><button class="ing-del" onclick="delIng(this)">×</button></li></ul><div class="edit-controls"><button class="ec-btn add" onclick="addIngredient(this)">＋ Ingrediente</button><button class="ec-btn del" onclick="deleteMealCard(this)">🗑 Elimina</button></div><div class="photos-sec" data-meal="${mid}"><div class="photos-lbl">📸 Foto pasto</div><div class="photos-grid"></div><input type="file" accept="image/*" multiple style="display:none" onchange="handlePhotos('${mid}',this)"></div></div></div>`;
+      document.getElementById('meals-'+dayId).appendChild(card);
+      reattachListeners(card);
+      saveAllEdits();
+    }
+  );
+}
+
+function deleteMealCard(btn){
+  if(confirm('Eliminare questo pasto?')){ btn.closest('.meal-card').remove(); saveAllEdits(); }
+}
+function delIng(btn){ btn.closest('.ing-item').remove(); }  // no save needed — saved on edit-mode exit
+function addIngredient(btn){
+  const list=btn.closest('.meal-body-inner').querySelector('.ing-list');
+  const li=document.createElement('li'); li.className='ing-item';
+  const qtySpan=document.createElement('span'); qtySpan.className='ing-qty'; qtySpan.contentEditable='true'; qtySpan.spellcheck=false; qtySpan.textContent='—';
+  const txtSpan=document.createElement('span'); txtSpan.contentEditable='true'; txtSpan.spellcheck=false; txtSpan.textContent='Ingrediente';
+  const delBtn=document.createElement('button'); delBtn.className='ing-del'; delBtn.textContent='×'; delBtn.onclick=function(){delIng(this);};
+  li.appendChild(qtySpan); li.appendChild(txtSpan); li.appendChild(delBtn);
+  list.appendChild(li);
+  setTimeout(()=>{txtSpan.focus();document.execCommand('selectAll',false,null);},50);
+}
+
+// ── ADVICE ──
+function toggleAdv(hdr){hdr.closest('.adv-card').classList.toggle('open');}
+function delAdv(e,btn){
+  e.stopPropagation();
+  if(confirm('Eliminare questo consiglio?')){ btn.closest('.adv-card').remove(); saveAllEdits(); }
+}
+function addAdvice(){
+  openModal('Nuovo consiglio',
+    '<label class="modal-label">Titolo</label><input class="modal-input" id="at" placeholder="es. Integratori">'+
+    '<label class="modal-label">Testo</label><textarea class="modal-textarea" id="ab" placeholder="Scrivi il consiglio…"></textarea>',
+    ()=>{
+      const t=document.getElementById('at').value.trim()||'Consiglio';
+      const b=document.getElementById('ab').value.trim();
+      const card=document.createElement('div'); card.className='adv-card';
+      card.innerHTML=`<div class="adv-hdr" onclick="toggleAdv(this)"><div class="adv-ico" style="background:#F1F8E9">📌</div><div class="adv-title" contenteditable="${editMode}" spellcheck="false">${t}</div><button class="adv-del" onclick="delAdv(event,this)">🗑</button><span class="chev">›</span></div><div class="adv-body"><div class="adv-inner"><div class="adv-text" contenteditable="${editMode}" spellcheck="false">${b}</div></div></div>`;
+      document.querySelector('.add-adv-btn').before(card);
+      saveAllEdits();
+    }
+  );
+}
+
+// ── CHECKLIST ──
+function toggleCheck(item,e){
+  if(editMode){
+    if(e && e.target.classList.contains('check-box')) item.classList.toggle('checked');
+    return;
+  }
+  item.classList.toggle('checked');
+  updateProgress();
+  updateTimerBar();
+  saveCheckedState();
+}
+
+function saveCheckedState(){
+  try{
+    const checked=[];
+    document.querySelectorAll('#clContainer .check-item.checked .check-label').forEach(l=>{
+      const t=l.innerText.trim();
+      if(t) checked.push(t);
+    });
+    localStorage.setItem('sv:checked', JSON.stringify(checked));
+  }catch(e){ console.warn('saveCheckedState:',e); }
+}
+function updateProgress(){
+  const all=document.querySelectorAll('#clContainer .check-item').length;
+  const chk=document.querySelectorAll('#clContainer .check-item.checked').length;
+  const pct=all?Math.round(chk/all*100):0;
+  document.getElementById('progFill').style.width=pct+'%';
+  document.getElementById('progText').textContent=chk+' / '+all;
+}
+function resetChecklist(){
+  document.querySelectorAll('#clContainer .check-item.checked').forEach(i=>i.classList.remove('checked'));
+  updateProgress(); updateTimerBar(); saveCheckedState();
+}
+function checkAll(){
+  document.querySelectorAll('#clContainer .check-item').forEach(i=>i.classList.add('checked'));
+  updateProgress(); updateTimerBar(); saveCheckedState();
+}
+function delGroup(btn){
+  if(confirm('Eliminare categoria?')){ btn.closest('.check-group').remove(); updateProgress(); saveAllEdits(); }
+}
+function delItem(e,btn){
+  e.stopPropagation(); btn.closest('.check-item').remove(); updateProgress(); saveCheckedState();
+}
+function addCheckItem(btn){
+  const g=btn.closest('.check-group');
+  const item=document.createElement('div'); item.className='check-item';
+  item.onclick=function(e){toggleCheck(this,e);};
+  item.innerHTML=`<div class="check-box"></div><div class="check-label" contenteditable="true" spellcheck="false">Nuovo elemento</div><button class="ci-del" onclick="delItem(event,this)">×</button>`;
+  g.insertBefore(item,btn);
+  const lbl=item.querySelector('.check-label');
+  lbl.contentEditable='true';
+  setTimeout(()=>{ lbl.focus(); document.execCommand('selectAll',false,null); },50);
+  updateProgress();
+  // save after user finishes typing (blur)
+  lbl.addEventListener('blur',()=>saveAllEdits(),{once:true});
+}
+function addGroup(){
+  openModal('Nuova categoria',
+    '<label class="modal-label">Nome</label><input class="modal-input" id="gn" placeholder="es. 🧃 Bevande">',
+    ()=>{
+      const name=document.getElementById('gn').value.trim()||'Categoria';
+      const g=document.createElement('div'); g.className='check-group';
+      g.innerHTML=`<div class="cg-title-row"><span class="cg-title" contenteditable="${editMode}" spellcheck="false">${name}</span><button class="cg-del" onclick="delGroup(this)">🗑</button></div><button class="add-ci-btn" onclick="addCheckItem(this)">＋ Aggiungi elemento</button>`;
+      document.querySelector('.add-cg-btn').before(g);
+      saveAllEdits();
+    }
+  );
+}
+
+// ── NOTES ──
+function toggleNotes(d){document.getElementById('nb-'+d).classList.toggle('open');}
+function saveNote(d){
+  const val=document.getElementById('nta-'+d).value.trim();
+  localStorage.setItem('note-'+d,val);
+  document.getElementById('nbadge-'+d).style.display=val?'inline-block':'none';
+  const tb=document.querySelector(`.tab-btn[data-tab="${d}"]`);
+  if(tb)tb.classList.toggle('has-note',!!val);
+  const msg=document.getElementById('nsaved-'+d);
+  msg.classList.add('show'); setTimeout(()=>msg.classList.remove('show'),2000);
+  updateTimerBar();
+}
+function loadNotes(){
+  DAYS.forEach(d=>{
+    const val=localStorage.getItem('note-'+d)||'';
+    const ta=document.getElementById('nta-'+d); if(ta)ta.value=val;
+    const badge=document.getElementById('nbadge-'+d); if(badge)badge.style.display=val?'inline-block':'none';
+    const tb=document.querySelector(`.tab-btn[data-tab="${d}"]`); if(tb)tb.classList.toggle('has-note',!!val);
+  });
+}
+
+// ── PHOTOS ──
+function getPhotos(id){try{return JSON.parse(localStorage.getItem('ph-'+id)||'[]');}catch{return[];}}
+function savePhotos(id,arr){try{localStorage.setItem('ph-'+id,JSON.stringify(arr));}catch(e){if(e.name==='QuotaExceededError')alert('Spazio pieno. Elimina alcune foto.');}}
+
+function compress(url,max,q,cb){
+  const img=new Image(); img.onload=()=>{
+    let w=img.width,h=img.height;
+    if(w>max||h>max){if(w>h){h=Math.round(h*max/w);w=max;}else{w=Math.round(w*max/h);h=max;}}
+    const c=document.createElement('canvas'); c.width=w; c.height=h;
+    c.getContext('2d').drawImage(img,0,0,w,h); cb(c.toDataURL('image/jpeg',q));
+  }; img.src=url;
+}
+
+function handlePhotos(id,input){
+  const files=Array.from(input.files); if(!files.length)return;
+  const photos=getPhotos(id); let done=0;
+  files.forEach(f=>{
+    const r=new FileReader(); r.onload=e=>compress(e.target.result,900,.78,c=>{
+      photos.push(c); done++;
+      if(done===files.length){savePhotos(id,photos);renderMealPhotos(id);if(id==='spesa')renderSpesaPhotos();updateTimerBar();}
+    }); r.readAsDataURL(f);
+  }); input.value='';
+}
+
+function renderMealPhotos(id){
+  const sec=document.querySelector(`.photos-sec[data-meal="${id}"]`); if(!sec)return;
+  const grid=sec.querySelector('.photos-grid');
+  grid.querySelectorAll('.p-thumb').forEach(t=>t.remove());
+  let addBtn=grid.querySelector('.add-p-btn');
+  if(!addBtn){
+    addBtn=document.createElement('div'); addBtn.className='add-p-btn';
+    addBtn.onclick=e=>{e.stopPropagation();sec.querySelector('input[type=file]').click();};
+    addBtn.innerHTML='<span>＋</span><span>FOTO</span>'; grid.appendChild(addBtn);
+  }
+  getPhotos(id).forEach((src,i)=>{
+    const img=document.createElement('img'); img.className='p-thumb'; img.src=src;
+    img.onclick=e=>{e.stopPropagation();openLb(src,id,i);}; grid.insertBefore(img,addBtn);
+  });
+}
+
+function renderSpesaPhotos(){
+  const grid=document.getElementById('spesa-grid'); if(!grid)return;
+  grid.querySelectorAll('.p-thumb,.add-p-btn').forEach(el=>el.remove());
+  getPhotos('spesa').forEach((src,i)=>{
+    const img=document.createElement('img'); img.className='p-thumb'; img.src=src;
+    img.onclick=()=>openLb(src,'spesa',i); grid.appendChild(img);
+  });
+  const ab=document.createElement('div'); ab.className='add-p-btn';
+  ab.onclick=()=>document.getElementById('spesa-input').click();
+  ab.innerHTML='<span>＋</span><span>FOTO</span>'; grid.appendChild(ab);
+}
+
+// ── LIGHTBOX ──
+function openLb(src,id,idx){_lbMealId=id;_lbIdx=idx;document.getElementById('lbImg').src=src;document.getElementById('lightbox').classList.add('open');document.body.style.overflow='hidden';}
+function closeLb(){document.getElementById('lightbox').classList.remove('open');document.getElementById('lbImg').src='';document.body.style.overflow='';_lbMealId=null;_lbIdx=null;}
+function deleteLbPhoto(){
+  if(_lbMealId===null)return;
+  if(!confirm('Eliminare?'))return;
+  const photos=getPhotos(_lbMealId); photos.splice(_lbIdx,1); savePhotos(_lbMealId,photos);
+  renderMealPhotos(_lbMealId); if(_lbMealId==='spesa')renderSpesaPhotos(); closeLb(); updateTimerBar();
+}
+document.getElementById('lightbox').addEventListener('click',function(e){if(e.target===this)closeLb();});
+
+// ── MODAL ──
+function openModal(title,body,cb){
+  document.getElementById('modalTitle').textContent=title;
+  document.getElementById('modalBody').innerHTML=body;
+  _modalCb=cb;
+  document.getElementById('modalOv').classList.add('open');
+  setTimeout(()=>{const inp=document.querySelector('#modalBody input');if(inp)inp.focus();},100);
+}
+function closeModal(){document.getElementById('modalOv').classList.remove('open');_modalCb=null;}
+function modalOk(){if(_modalCb)_modalCb();closeModal();}
+document.getElementById('modalOv').addEventListener('click',function(e){if(e.target===this)closeModal();});
+
+// ── STATS ──
+function countPhotos(){
+  let n=0;
+  document.querySelectorAll('.photos-sec[data-meal]').forEach(s=>n+=getPhotos(s.dataset.meal).length);
+  n+=getPhotos('spesa').length; return n;
+}
+function countNotes(){return DAYS.filter(d=>(localStorage.getItem('note-'+d)||'').trim().length>0).length;}
+function getCheckPct(){
+  const all=document.querySelectorAll('#clContainer .check-item').length;
+  const chk=document.querySelectorAll('#clContainer .check-item.checked').length;
+  return all?Math.round(chk/all*100):0;
+}
+
+function updateTimerBar(){
+  document.getElementById('tNote').textContent=countNotes();
+  document.getElementById('tPhoto').textContent=countPhotos();
+  document.getElementById('tCheck').textContent=getCheckPct()+'%';
+  const sd=localStorage.getItem('start-date');
+  if(sd){
+    const diff=Math.floor((Date.now()-new Date(sd).getTime())/86400000);
+    document.getElementById('timerCount').textContent=diff+(diff===1?' giorno':' giorni');
+  } else {
+    document.getElementById('timerCount').textContent='— giorni';
+  }
+}
+
+function updateStats(){
+  updateTimerBar();
+  if(currentNav!=='stats')return;
+  document.getElementById('stNotes').textContent=countNotes();
+  document.getElementById('stPhotos').textContent=countPhotos();
+  document.getElementById('stCheck').textContent=getCheckPct()+'%';
+  document.getElementById('stMeals').textContent=document.querySelectorAll('.meal-card').length;
+  // streak
+  const bar=document.getElementById('streakBar'); bar.innerHTML='';
+  let streak=0;
+  DAYS.forEach((d,i)=>{
+    const has=(localStorage.getItem('note-'+d)||'').trim().length>0;
+    if(has)streak++;
+    const dot=document.createElement('div'); dot.className='sd '+(has?'done':'miss');
+    dot.textContent=has?'✓':(i+1); bar.appendChild(dot);
+  });
+  document.getElementById('stStreak').textContent=streak+' / '+DAYS.length;
+  // big timer
+  const sd=localStorage.getItem('start-date');
+  if(sd){
+    document.getElementById('startInput').value=sd;
+    const diff=Math.floor((Date.now()-new Date(sd).getTime())/86400000);
+    document.getElementById('btDays').textContent=diff+(diff===1?' giorno':' giorni');
+    const w=Math.floor(diff/7),r=diff%7;
+    document.getElementById('btSub').textContent=w>0?(w+(w===1?' settimana':' settimane')+(r>0?' e '+r+' giorni':'')):'Iniziato il '+new Date(sd).toLocaleDateString('it-IT',{day:'2-digit',month:'long',year:'numeric'});
+  }
+}
+
+function setStart(val){
+  if(!val)return;
+  localStorage.setItem('start-date',val);
+  updateStats(); updateTimerBar();
+}
+
+// auto-update every minute
+setInterval(()=>{updateTimerBar();if(currentNav==='stats')updateStats();},60000);
+
+// ══════════════════════════════════════
+// PERSISTENCE — clean single-pass save/restore
+// ══════════════════════════════════════
+
+function saveAllEdits(){
+  try{
+    // 1. Save each day's meal container HTML
+    DAYS.forEach(d=>{
+      const cont=document.getElementById('meals-'+d);
+      if(cont) localStorage.setItem('sv:meals:'+d, cont.innerHTML);
+    });
+    // 2. Save checklist container HTML
+    const cl=document.getElementById('clContainer');
+    if(cl) localStorage.setItem('sv:cl', cl.innerHTML);
+    // 3. Save advice section HTML (just the cards)
+    const advCards=document.querySelectorAll('#sec-consigli .adv-card');
+    localStorage.setItem('sv:adv', JSON.stringify(Array.from(advCards).map(c=>c.outerHTML)));
+    // 4. Save header editable texts
+    const hdr={};
+    document.querySelectorAll('.hdr-label,.hdr-name span,.hdr-name em,.pill b').forEach((el,i)=>{ hdr[i]=el.innerHTML; });
+    localStorage.setItem('sv:hdr', JSON.stringify(hdr));
+    // 5. Save checked items by label text (robust to reorder)
+    const checked=[];
+    document.querySelectorAll('#clContainer .check-item.checked .check-label').forEach(l=>checked.push(l.innerText.trim()));
+    localStorage.setItem('sv:checked', JSON.stringify(checked));
+    // 6. Save day headers/subs
+    const days={};
+    DAYS.forEach(d=>{
+      const hdrEl=document.querySelector('#'+d+' .day-hdr');
+      const subEl=document.querySelector('#'+d+' .day-sub');
+      if(hdrEl) days[d+'_h']=hdrEl.innerHTML;
+      if(subEl) days[d+'_s']=subEl.innerHTML;
+    });
+    localStorage.setItem('sv:days', JSON.stringify(days));
+  }catch(e){ console.warn('saveAllEdits:',e); }
+}
+
+function reattachListeners(root){
+  // Re-attach all event listeners after innerHTML restore
+  root.querySelectorAll('.meal-hdr').forEach(h=>{ h.onclick=function(e){ toggleMeal(this,e); }; });
+  root.querySelectorAll('.ing-del').forEach(b=>{ b.onclick=function(){ delIng(this); }; });
+  root.querySelectorAll('.ec-btn.add').forEach(b=>{ b.onclick=function(){ addIngredient(this); }; });
+  root.querySelectorAll('.ec-btn.del').forEach(b=>{ b.onclick=function(){ deleteMealCard(this); }; });
+  root.querySelectorAll('.check-item').forEach(item=>{ item.onclick=function(e){ toggleCheck(this,e); }; });
+  root.querySelectorAll('.cg-del').forEach(b=>{ b.onclick=function(){ delGroup(this); }; });
+  root.querySelectorAll('.ci-del').forEach(b=>{ b.onclick=function(e){ delItem(e,this); }; });
+  root.querySelectorAll('.add-ci-btn').forEach(b=>{ b.onclick=function(){ addCheckItem(this); }; });
+  root.querySelectorAll('.adv-hdr').forEach(h=>{ h.onclick=function(){ toggleAdv(this); }; });
+  root.querySelectorAll('.adv-del').forEach(b=>{ b.onclick=function(e){ delAdv(e,this); }; });
+  root.querySelectorAll('.notes-hdr').forEach(h=>{
+    const d=h.closest('.notes-block')?.id?.replace('nb-','');
+    if(d) h.onclick=function(){ toggleNotes(d); };
+  });
+  root.querySelectorAll('.notes-save').forEach(b=>{
+    const d=b.closest('.notes-block')?.id?.replace('nb-','');
+    if(d) b.onclick=function(){ saveNote(d); };
+  });
+  root.querySelectorAll('input[type=file]').forEach(inp=>{
+    const mid=inp.closest('.photos-sec')?.dataset?.meal;
+    if(mid) inp.onchange=function(){ handlePhotos(mid,this); };
+  });
+  // Re-init photo add buttons
+  root.querySelectorAll('.photos-grid').forEach(grid=>{
+    const sec=grid.closest('.photos-sec'); if(!sec) return;
+    const mid=sec.dataset.meal;
+    if(!grid.querySelector('.add-p-btn')){
+      const ab=document.createElement('div'); ab.className='add-p-btn';
+      ab.onclick=e=>{ e.stopPropagation(); sec.querySelector('input[type=file]').click(); };
+      ab.innerHTML='<span>＋</span><span>FOTO</span>';
+      grid.appendChild(ab);
+    }
+  });
+}
+
+function restoreAllEdits(){
+  _observerPaused=true;
+  try{
+    // 1. Restore meal containers
+    DAYS.forEach(d=>{
+      const saved=localStorage.getItem('sv:meals:'+d);
+      const cont=document.getElementById('meals-'+d);
+      if(saved && cont){ cont.innerHTML=saved; reattachListeners(cont); }
+    });
+    // 2. Restore checklist
+    const clSaved=localStorage.getItem('sv:cl');
+    const clCont=document.getElementById('clContainer');
+    if(clSaved && clCont){ clCont.innerHTML=clSaved; reattachListeners(clCont); }
+    // 3. Restore advice cards
+    const advSaved=localStorage.getItem('sv:adv');
+    if(advSaved){
+      try{
+        const cards=JSON.parse(advSaved);
+        const advCont=document.getElementById('sec-consigli');
+        advCont.querySelectorAll('.adv-card').forEach(c=>c.remove());
+        const addBtn=advCont.querySelector('.add-adv-btn');
+        cards.forEach(html=>{
+          const tmp=document.createElement('div'); tmp.innerHTML=html;
+          const card=tmp.firstElementChild;
+          if(card){ advCont.insertBefore(card,addBtn); reattachListeners(card); }
+        });
+      }catch(e){ console.warn('adv restore:',e); }
+    }
+    // 4. Restore header texts
+    const hdrSaved=localStorage.getItem('sv:hdr');
+    if(hdrSaved){
+      try{
+        const hdr=JSON.parse(hdrSaved);
+        document.querySelectorAll('.hdr-label,.hdr-name span,.hdr-name em,.pill b').forEach((el,i)=>{
+          if(hdr[i]!==undefined) el.innerHTML=hdr[i];
+        });
+      }catch(e){}
+    }
+    // 5. Restore checked state by label text
+    const checkedSaved=localStorage.getItem('sv:checked');
+    if(checkedSaved){
+      try{
+        const labels=JSON.parse(checkedSaved);
+        const set=new Set(labels);
+        document.querySelectorAll('#clContainer .check-item').forEach(item=>{
+          const lbl=item.querySelector('.check-label');
+          if(lbl && set.has(lbl.innerText.trim())) item.classList.add('checked');
+        });
+      }catch(e){}
+    }
+    // 6. Restore day headers/subs
+    const daysSaved=localStorage.getItem('sv:days');
+    if(daysSaved){
+      try{
+        const days=JSON.parse(daysSaved);
+        DAYS.forEach(d=>{
+          const hdrEl=document.querySelector('#'+d+' .day-hdr');
+          const subEl=document.querySelector('#'+d+' .day-sub');
+          if(hdrEl && days[d+'_h']!==undefined) hdrEl.innerHTML=days[d+'_h'];
+          if(subEl && days[d+'_s']!==undefined) subEl.innerHTML=days[d+'_s'];
+        });
+      }catch(e){}
+    }
+  }catch(e){ console.warn('restoreAllEdits:',e); }
+  _observerPaused=false;
+}
+
+// toggleEditMode — saves on exit, applies edit state on enter
+function toggleEditMode(){
+  editMode=!editMode;
+  document.body.classList.toggle('edit-mode',editMode);
+  document.getElementById('editBanner').classList.toggle('show',editMode);
+  document.querySelector('.edit-hdr-btn').textContent=editMode?'✓ Fine modifica':'✏️ Modifica';
+  applyEditMode();
+  if(!editMode){
+    saveAllEdits();
+    showSaveToast();
+  }
+}
+
+function showSaveToast(){
+  let toast=document.getElementById('saveToast');
+  if(!toast){
+    toast=document.createElement('div');
+    toast.id='saveToast';
+    toast.style.cssText='position:fixed;bottom:calc(70px + env(safe-area-inset-bottom) + 14px);'+
+      'left:50%;transform:translateX(-50%) translateY(0);background:#2C2C2C;color:#fff;'+
+      'padding:11px 22px;border-radius:22px;font-size:13px;font-weight:500;z-index:600;'+
+      'transition:opacity .35s;pointer-events:none;white-space:nowrap;box-shadow:0 4px 18px rgba(0,0,0,.25)';
+    document.body.appendChild(toast);
+  }
+  toast.textContent='✓ Modifiche salvate';
+  toast.style.opacity='1';
+  setTimeout(()=>{ toast.style.opacity='0'; },2400);
+}
+
+// ── INIT ──
+loadNotes();
+restoreAllEdits();   // restores HTML + reattaches listeners per section
+
+// On first run (no saved data), attach listeners to the static HTML
+if(!localStorage.getItem('sv:meals:g1')){
+  reattachListeners(document.body);
+}
+
+updateProgress();
+updateTimerBar();
+
+// Save when app goes to background or tab is hidden (critical for iPhone "close" gesture)
+document.addEventListener('visibilitychange', ()=>{
+  if(document.visibilityState === 'hidden'){
+    if(editMode) saveAllEdits();
+    saveCheckedState();
+  }
+});
+// pagehide fires on iOS when user swipes away the app
+window.addEventListener('pagehide', ()=>{
+  if(editMode) saveAllEdits();
+  saveCheckedState();
+});
+</script>
+</body>
+</html>
